@@ -91,7 +91,7 @@ export class DiagnosiComponent {
       // i nuovi pulsanti con [disabled] rimosso prima di cercarli nel DOM.
       setTimeout(() => {
         const firstBtn = this.elRef.nativeElement
-          .querySelector<HTMLButtonElement>('.option-band:not([disabled])');
+          .querySelector('.option-band:not([disabled])') as HTMLButtonElement | null;
         firstBtn?.focus();
       }, 80);
     }, 30);

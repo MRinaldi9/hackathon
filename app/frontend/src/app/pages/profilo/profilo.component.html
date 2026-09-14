@@ -1,28 +1,30 @@
-<div class="profilo-container">
+<div class="arcade-root profilo-root">
 
   <!-- Hero profilo -->
   <div class="profilo-hero">
-    <div class="trofeo animate-pop">🧠</div>
-    <h1 class="titolo">Il tuo profilo finanziario</h1>
+    <div class="trofeo" aria-hidden="true">🧠</div>
+    <h1 class="titolo neon-title">IL TUO PROFILO</h1>
     <p class="sottotitolo">Ecco cosa ha scoperto la simulazione su di te.</p>
   </div>
 
   <!-- Griglia competenze -->
-  <section class="sezione-profilo">
+  <section class="sezione-profilo" aria-label="Livelli di competenza">
     <div class="griglia-profilo">
       @for (voce of profilo; track voce.concetto) {
-        <div class="card voce-profilo animate-pop" [class]="'livello-' + voce.livello">
-          <div class="voce-left">
-            <span class="icona-livello" [attr.aria-label]="voce.livello">{{ iconaLivello(voce.livello) }}</span>
-            <div class="testi">
-              <span class="nome-concetto">{{ voce.concetto | titlecase }}</span>
-              <span class="pill-livello" [class]="'pill-' + voce.livello">{{ voce.livello }}</span>
+        <div class="arcade-panel voce-profilo" [class]="'livello-' + voce.livello">
+          <div class="voce-body">
+            <div class="voce-left">
+              <span class="icona-livello" [attr.aria-label]="voce.livello">{{ iconaLivello(voce.livello) }}</span>
+              <div class="testi">
+                <span class="nome-concetto">{{ voce.concetto | titlecase }}</span>
+                <span class="pill-livello" [class]="'pill-' + voce.livello">{{ voce.livello | uppercase }}</span>
+              </div>
             </div>
-          </div>
-          <div class="barra-theta" role="progressbar" [attr.aria-valuenow]="((voce.theta + 2) / 4) * 100" aria-valuemin="0" aria-valuemax="100">
-            <div class="fill-theta"
-                 [style.width.%]="((voce.theta + 2) / 4) * 100"
-                 [class]="'fill-' + voce.livello">
+            <div class="barra-theta" role="progressbar" [attr.aria-valuenow]="((voce.theta + 2) / 4) * 100" aria-valuemin="0" aria-valuemax="100">
+              <div class="fill-theta"
+                   [style.width.%]="((voce.theta + 2) / 4) * 100"
+                   [class]="'fill-' + voce.livello">
+              </div>
             </div>
           </div>
         </div>
@@ -33,7 +35,7 @@
   <!-- Micro-lezioni -->
   @if (haLezioniDaLeggere) {
     <section class="sezione-lezioni">
-      <h2 class="titolo-lezioni">📖 Le tue micro-lezioni</h2>
+      <h2 class="titolo-lezioni neon-title neon-title--cyan">📖 MICRO-LEZIONI</h2>
 
       <!-- Dot indicator -->
       <div class="dot-indicator" role="tablist" aria-label="Lezioni">
@@ -44,50 +46,55 @@
             [attr.aria-label]="'Lezione ' + (i + 1)"
             [attr.aria-selected]="i === indiceLezione"
             role="tab"
+            type="button"
             (click)="indiceLezione = i">
           </button>
         }
       </div>
 
       @if (lezioneCorrente) {
-        <div class="card lezione-card animate-pop">
-          <div class="lezione-header">
-            <span class="badge-intensita badge-{{ lezioneCorrente.intensita }}">
-              {{ lezioneCorrente.intensita }}
-            </span>
-            <span class="concetto-tag">{{ lezioneCorrente.concetto | titlecase }}</span>
-          </div>
-          <h3 class="titolo-lezione">{{ lezioneCorrente.titolo }}</h3>
-          <p class="idea">{{ lezioneCorrente.idea }}</p>
-
-          @if (lezioneCorrente.esempio) {
-            <div class="esempio-box">
-              <span class="box-label">Esempio</span>
-              {{ lezioneCorrente.esempio }}
+        <div class="arcade-panel lezione-card">
+          <div class="lezione-body">
+            <div class="lezione-header">
+              <span class="badge-intensita badge-{{ lezioneCorrente.intensita }}">
+                {{ lezioneCorrente.intensita | uppercase }}
+              </span>
+              <span class="concetto-tag">{{ lezioneCorrente.concetto | titlecase }}</span>
             </div>
-          }
+            <h3 class="titolo-lezione">{{ lezioneCorrente.titolo }}</h3>
+            <p class="idea">{{ lezioneCorrente.idea }}</p>
 
-          <div class="takeaway-box">
-            <span class="box-label">💡 Ricorda</span>
-            {{ lezioneCorrente.takeaway }}
+            @if (lezioneCorrente.esempio) {
+              <div class="esempio-box">
+                <span class="box-label">Esempio</span>
+                {{ lezioneCorrente.esempio }}
+              </div>
+            }
+
+            <div class="takeaway-box">
+              <span class="box-label">💡 Ricorda</span>
+              {{ lezioneCorrente.takeaway }}
+            </div>
           </div>
         </div>
       }
 
-      <button class="btn btn-primary btn-avanti" (click)="avanti()">
+      <button class="arcade-btn btn-avanti" type="button" (click)="avanti()">
         @if (indiceLezione < lezioni.length - 1) {
           Prossima lezione →
         } @else {
-          Inizia la verifica finale 🎯
+          Verifica finale 🎯
         }
       </button>
     </section>
 
   } @else {
-    <div class="card nessuna-debolezza animate-pop">
-      <span class="grande-icona">💪</span>
-      <p class="nessuna-testo">Sei già forte su tutti i concetti! Passiamo alla verifica finale.</p>
-      <button class="btn btn-primary" (click)="saltaAlRetest()">Vai al re-test →</button>
+    <div class="arcade-panel nessuna-debolezza">
+      <div class="nessuna-body">
+        <span class="grande-icona" aria-hidden="true">💪</span>
+        <p class="nessuna-testo">Sei già forte su tutti i concetti! Passiamo alla verifica finale.</p>
+        <button class="arcade-btn arcade-btn--cyan" type="button" (click)="saltaAlRetest()">Vai al re-test →</button>
+      </div>
     </div>
   }
 
