@@ -29,7 +29,7 @@ export class ProfiloComponent implements OnInit {
 
   ngOnInit(): void {
     // I dati arrivano via router state (passati da DiagnosiComponent)
-    const nav = this.router.getCurrentNavigation()?.extras?.state;
+    const nav = this.router.currentNavigation()?.extras?.state;
     const dati = nav?.['dati'] as RispostaProfilo | undefined;
 
     // Fallback: recupera dallo history.state se il componente viene
