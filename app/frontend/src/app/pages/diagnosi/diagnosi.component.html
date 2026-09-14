@@ -1,72 +1,78 @@
-<div class="diagnosi-container">
+<div class="game-root">
 
-  <!-- ── INTRO SCREEN ─────────────────────────────────── -->
+  <!-- INTRO -->
   @if (mostraIntro) {
     <div class="intro-screen">
-      <div class="intro-content">
-        <div class="app-logo animate-float">💳</div>
-        <h1 class="display text-gradient">FinFlow</h1>
-        <p class="intro-tagline">Impara la finanza giocando</p>
-        <p class="intro-desc">
-          Ti mettiamo in situazioni reali di vita. Tu scegli.
-          Noi vediamo quanto ci capisci — senza che te ne accorga.
-        </p>
-        <button class="btn btn-primary btn-lg" (click)="inizia()">
-          Inizia la simulazione →
-        </button>
-        <p class="intro-disclaimer">Nessun quiz. Solo situazioni reali.</p>
+      <div class="cabinet-screen" role="img" aria-label="Schermata arcade FINFLOW - Simulazione di vita">
+        <div class="cabinet-title" aria-hidden="true">FINFLOW</div>
+        <div class="cabinet-subtitle" aria-hidden="true">SIMULAZIONE DI VITA</div>
+        <div class="insert-coin" aria-hidden="true">— TOCCA PER INIZIARE —</div>
+      </div>
+      <button class="start-btn" (click)="inizia()" type="button">INSERISCI GETTONE</button>
+    </div>
+  }
+
+  <!-- LOADING -->
+  @if (!mostraIntro && caricamento) {
+    <div class="loader" role="status" aria-live="polite" aria-label="Caricamento in corso">
+      <div class="loader-label" aria-hidden="true">CARICAMENTO…</div>
+      <div class="loader-track" aria-hidden="true">
+        <div class="loader-bar"></div>
       </div>
     </div>
   }
 
-  <!-- ── LOADING ────────────────────────────────────────── -->
-  @if (!mostraIntro && caricamento) {
-    <div class="spinner-wrap">
-      <div class="spinner"></div>
-      <p>Preparando la simulazione…</p>
-    </div>
-  }
-
-  <!-- ── GIOCO ─────────────────────────────────────────── -->
+  <!-- GIOCO -->
   @if (!mostraIntro && !caricamento && item) {
+    <div class="game-screen">
 
-    <!-- Header di gioco: progresso + streak -->
-    <div class="game-header">
-      <div class="header-top">
-        <span class="brand-small">FinFlow</span>
-        @if (risposteGiuste > 0) {
-          <span class="streak-counter animate-pop">
-            🔥 {{ risposteGiuste }}
-          </span>
+      <!-- energy bar (senza numeri) -->
+      <div
+        class="energy-bar"
+        role="progressbar"
+        [attr.aria-valuenow]="progresso"
+        aria-valuemin="0"
+        aria-valuemax="8"
+        [attr.aria-label]="'Progresso: ' + progresso + ' di 8 domande'">
+        <div class="energy-fill" [style.width.%]="(progresso / 8) * 100"></div>
+      </div>
+
+      <!-- situation panel -->
+      <div class="situation-panel" [class.slide-up]="animaCard" aria-live="polite" aria-atomic="true">
+        <span class="concept-chip">{{ item.concetto | uppercase }}</span>
+        <p class="situation-text">{{ item.testo }}</p>
+      </div>
+
+      <!-- options area -->
+      <div class="options-area" role="group" [attr.aria-label]="'Scegli una risposta per: ' + item.testo">
+        @for (opzione of item.opzioni; track opzione.id) {
+          <button
+            class="option-band"
+            [class.selected]="panelSelezionato === opzione.id"
+            [class.flash-correct]="esitoFlash === 'correct' && panelSelezionato === opzione.id"
+            [class.flash-wrong]="esitoFlash === 'wrong' && panelSelezionato === opzione.id"
+            [disabled]="!!panelSelezionato"
+            [attr.aria-pressed]="panelSelezionato === opzione.id"
+            (click)="scegli(opzione.id)"
+            type="button">
+            <span class="option-text">{{ opzione.testo }}</span>
+          </button>
         }
       </div>
-      <div class="progress-bar">
-        <div class="progress-fill" [style.width.%]="(progresso / 8) * 100"></div>
-      </div>
-      <p class="item-counter">Situazione {{ progresso + 1 }} di 8</p>
-    </div>
 
-    <!-- Card della situazione -->
-    <div class="card situazione-card" [class.card-enter]="animaCard">
-      <span class="tag-concetto">{{ item.concetto | titlecase }}</span>
-      <p class="testo-situazione">{{ item.testo }}</p>
-    </div>
-
-    <!-- Opzioni di risposta -->
-    <div class="opzioni" [class.card-enter]="animaCard">
-      @for (opzione of item.opzioni; track opzione.id) {
-        <button
-          class="btn-opzione"
-          [class.selezionata]="opzioneScelta === opzione.id"
-          [class.feedback-esatta]="feedback === 'esatta' && opzioneScelta === opzione.id"
-          [class.feedback-errata]="feedback === 'errata' && opzioneScelta === opzione.id"
-          [disabled]="!!opzioneScelta"
-          (click)="scegli(opzione.id)">
-          {{ opzione.testo }}
-        </button>
+      <!-- flash overlay (annuncio screen-reader) -->
+      @if (esitoFlash) {
+        <div
+          class="flash-overlay"
+          [class]="'flash-overlay flash-' + esitoFlash"
+          aria-hidden="true">
+        </div>
+        <div role="alert" class="sr-only">
+          {{ esitoFlash === 'correct' ? 'Risposta corretta!' : 'Risposta errata.' }}
+        </div>
       }
-    </div>
 
+    </div>
   }
 
 </div>
