@@ -1,0 +1,127 @@
+// Stili per la fase di diagnosi adattiva
+.diagnosi-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-lg);
+  min-height: 100vh;
+  gap: var(--space-lg);
+}
+
+.progress-bar {
+  width: 100%;
+  max-width: 480px;
+  height: 6px;
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+
+  .progress-fill {
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: var(--radius-full);
+    transition: width 0.4s ease;
+  }
+}
+
+.situazione-card {
+  width: 100%;
+  max-width: 480px;
+
+  .tag-concetto {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    background: rgba(108, 99, 255, 0.1);
+    border-radius: var(--radius-full);
+    padding: 2px 10px;
+    margin-bottom: var(--space-sm);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .testo-situazione {
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--color-text);
+  }
+}
+
+.opzioni {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: 480px;
+}
+
+.btn-opzione {
+  width: 100%;
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  touch-action: manipulation;
+
+  &:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    background: rgba(108, 99, 255, 0.04);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &.selezionata {
+    border-color: var(--color-primary);
+    background: rgba(108, 99, 255, 0.08);
+  }
+
+  &.feedback-esatta {
+    border-color: var(--color-success);
+    background: var(--color-success);
+    color: #fff;
+  }
+
+  &.feedback-errata {
+    border-color: var(--color-danger);
+    background: var(--color-danger);
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+// Spinner
+.spinner-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+  color: var(--color-muted);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

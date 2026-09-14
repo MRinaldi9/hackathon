@@ -1,0 +1,101 @@
+// ============================================================
+// STILI GLOBALI  —  Hagenthon / Inclusione Finanziaria
+// Design orientato ai teenager: colori vivaci, testo grande,
+// aree di tocco generose, animazioni fluide.
+// ============================================================
+
+// -- Reset di base ------------------------------------------
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  // Palette principale
+  --color-primary:    #6C63FF; // viola vivace — energia, digitale
+  --color-success:    #2DD4BF; // teal — risposta corretta
+  --color-danger:     #F87171; // rosso morbido — risposta sbagliata
+  --color-warning:    #FBBF24; // giallo — attenzione, debole
+  --color-bg:         #F8F7FF; // sfondo quasi bianco con tono viola
+  --color-card:       #FFFFFF;
+  --color-text:       #1E1B4B; // viola scuro — leggibile
+  --color-muted:      #6B7280;
+  --color-border:     #E5E7EB;
+
+  // Tipografia
+  --font-family:      'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-size-base:   16px;
+  --line-height-base: 1.6;
+
+  // Spaziatura
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  40px;
+
+  // Bordi arrotondati (stile app mobile)
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-full: 9999px;
+
+  // Ombre
+  --shadow-card: 0 4px 24px rgba(108, 99, 255, 0.08);
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  // Disabilita il pull-to-refresh del browser durante le gesture
+  overscroll-behavior: none;
+}
+
+// -- Utilità comuni ------------------------------------------
+.card {
+  background: var(--color-card);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-lg);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: var(--space-sm) var(--space-lg);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s, box-shadow 0.1s;
+  user-select: none;
+  touch-action: manipulation; // gesture veloci senza delay 300ms
+
+  &:active { transform: scale(0.97); }
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+  &:hover { box-shadow: 0 6px 18px rgba(108, 99, 255, 0.4); }
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+}
+
+// -- Feedback visivo risposta --------------------------------
+.feedback-esatta  { background: var(--color-success) !important; color: #fff !important; }
+.feedback-errata  { background: var(--color-danger)  !important; color: #fff !important; }

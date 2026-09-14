@@ -1,0 +1,73 @@
+<!-- Schermata profilo: forte/debole per concetto + micro-lezioni mirate -->
+<div class="profilo-container">
+
+  <!-- Sezione profilo di competenza -->
+  <section class="sezione-profilo">
+    <h1 class="titolo">Il tuo profilo finanziario</h1>
+    <p class="sottotitolo">Ecco cosa ha scoperto la simulazione su di te.</p>
+
+    <div class="griglia-profilo">
+      @for (voce of profilo; track voce.concetto) {
+        <div class="card voce-profilo" [class]="'livello-' + voce.livello">
+          <span class="icona-livello">{{ iconaLivello(voce.livello) }}</span>
+          <div class="testi">
+            <span class="nome-concetto">{{ voce.concetto | titlecase }}</span>
+            <span class="etichetta-livello">{{ voce.livello | titlecase }}</span>
+          </div>
+          <!-- Barra theta visiva (-2..+2 mappato a 0..100%) -->
+          <div class="barra-theta">
+            <div class="fill-theta"
+                 [style.width.%]="((voce.theta + 2) / 4) * 100"
+                 [class]="'fill-' + voce.livello">
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Sezione micro-lezioni (solo se ci sono concetti deboli) -->
+  @if (haLezioniDaLeggere) {
+    <section class="sezione-lezioni">
+      <h2 class="titolo-lezioni">
+        Le tue micro-lezioni ({{ indiceLezione + 1 }} di {{ lezioni.length }})
+      </h2>
+
+      @if (lezioneCorrente) {
+        <div class="card lezione-card">
+          <span class="badge-intensita badge-{{ lezioneCorrente.intensita }}">
+            {{ lezioneCorrente.intensita }}
+          </span>
+          <h3 class="titolo-lezione">{{ lezioneCorrente.titolo }}</h3>
+          <p class="idea">{{ lezioneCorrente.idea }}</p>
+
+          @if (lezioneCorrente.esempio) {
+            <div class="esempio-box">
+              <strong>Esempio:</strong> {{ lezioneCorrente.esempio }}
+            </div>
+          }
+
+          <div class="takeaway-box">
+            <strong>Ricorda:</strong> {{ lezioneCorrente.takeaway }}
+          </div>
+        </div>
+      }
+
+      <button class="btn btn-primary btn-avanti" (click)="avanti()">
+        @if (indiceLezione < lezioni.length - 1) {
+          Prossima lezione →
+        } @else {
+          Inizia la verifica finale →
+        }
+      </button>
+    </section>
+  } @else {
+    <!-- Nessuna debolezza trovata: puoi saltare al re-test -->
+    <div class="card nessuna-debolezza">
+      <span class="grande-check">✅</span>
+      <p>Ottimo! Sei forte su tutti i concetti. Andiamo alla verifica finale.</p>
+      <button class="btn btn-primary" (click)="saltaAlRetest()">Vai al re-test →</button>
+    </div>
+  }
+
+</div>

@@ -1,0 +1,14 @@
+{
+  "name": "hagenthon-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Motore di stima adattivo IRT — Hagenthon / Inclusione Finanziaria",
+  "scripts": {
+    "start": "node src/engine.js",
+    "dev": "node --watch src/engine.js"
+  },
+  "dependencies": {
+    "fastify": "^4.27.0",
+    "@fastify/cors": "^9.0.1"
+  }
+}

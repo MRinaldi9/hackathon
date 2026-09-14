@@ -1,0 +1,109 @@
+// Stili per la schermata del profilo e micro-lezioni
+.profilo-container {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.sezione-profilo {
+  .titolo { font-size: 1.6rem; font-weight: 800; margin-bottom: var(--space-xs); }
+  .sottotitolo { color: var(--color-muted); margin-bottom: var(--space-md); }
+}
+
+.griglia-profilo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.voce-profilo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+
+  .icona-livello { font-size: 1.5rem; flex-shrink: 0; }
+
+  .testi {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .nome-concetto { font-weight: 600; font-size: 0.95rem; }
+  .etichetta-livello { font-size: 0.8rem; color: var(--color-muted); }
+
+  .barra-theta {
+    width: 80px;
+    height: 6px;
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .fill-theta { height: 100%; border-radius: var(--radius-full); transition: width 0.6s ease; }
+  .fill-forte  { background: var(--color-success); }
+  .fill-medio  { background: var(--color-primary); }
+  .fill-debole { background: var(--color-warning); }
+
+  &.livello-debole { border-left: 3px solid var(--color-warning); }
+  &.livello-forte  { border-left: 3px solid var(--color-success); }
+}
+
+.sezione-lezioni {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+
+  .titolo-lezioni { font-size: 1.2rem; font-weight: 700; }
+}
+
+.lezione-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+
+  .badge-intensita {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+    width: fit-content;
+  }
+
+  .badge-fondamenta { background: #FEF3C7; color: #92400E; }
+  .badge-rinforzo   { background: #E0E7FF; color: #3730A3; }
+  .badge-cenno      { background: #F0FDF4; color: #166534; }
+
+  .titolo-lezione { font-size: 1.1rem; font-weight: 700; }
+  .idea { font-size: 1rem; line-height: 1.6; }
+
+  .esempio-box, .takeaway-box {
+    background: var(--color-bg);
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm) var(--space-md);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--color-text);
+  }
+}
+
+.btn-avanti { width: 100%; }
+
+.nessuna-debolezza {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  text-align: center;
+
+  .grande-check { font-size: 3rem; }
+}

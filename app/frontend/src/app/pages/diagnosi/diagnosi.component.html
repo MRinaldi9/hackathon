@@ -1,0 +1,41 @@
+<!-- Schermata di assessment adattivo: una situazione di vita alla volta -->
+<div class="diagnosi-container">
+
+  <!-- Spinner iniziale -->
+  @if (caricamento) {
+    <div class="spinner-wrap">
+      <div class="spinner"></div>
+      <p>Preparando la simulazione…</p>
+    </div>
+  }
+
+  <!-- Simulazione in corso -->
+  @if (!caricamento && item) {
+    <!-- Indicatore di avanzamento (barra) -->
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="(progresso / 10) * 100"></div>
+    </div>
+
+    <!-- Card situazione -->
+    <div class="card situazione-card">
+      <span class="tag-concetto">{{ item.concetto | titlecase }}</span>
+      <p class="testo-situazione">{{ item.testo }}</p>
+    </div>
+
+    <!-- Opzioni di risposta (tap o swipe verso l'opzione) -->
+    <div class="opzioni">
+      @for (opzione of item.opzioni; track opzione.id) {
+        <button
+          class="btn-opzione"
+          [class.selezionata]="opzioneScelta === opzione.id"
+          [class.feedback-esatta]="feedback === 'esatta' && opzioneScelta === opzione.id"
+          [class.feedback-errata]="feedback === 'errata' && opzioneScelta === opzione.id"
+          [disabled]="!!opzioneScelta"
+          (click)="scegli(opzione.id)">
+          {{ opzione.testo }}
+        </button>
+      }
+    </div>
+  }
+
+</div>
