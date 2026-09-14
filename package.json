@@ -12,6 +12,8 @@
     "start:backend": "npm --prefix app/backend run start",
     "build": "npm run build:frontend",
     "build:frontend": "npm --prefix app/frontend run build",
+    "test": "npm run test:frontend",
+    "test:frontend": "npm --prefix app/frontend run test:ci",
     "install:all": "npm install && npm --prefix app/frontend install && npm --prefix app/backend install",
     "install:frontend": "npm --prefix app/frontend install",
     "install:backend": "npm --prefix app/backend install"

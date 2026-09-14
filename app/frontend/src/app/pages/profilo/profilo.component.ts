@@ -4,18 +4,18 @@
 // Riceve i dati dalla navigazione (router state) impostato da DiagnosiComponent.
 // Dopo che l'utente ha letto le lezioni, naviga a /retest.
 // ============================================================
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { VoceProfilo, Lezione, RispostaProfilo } from '../../services/assessment.service';
 
 @Component({
-  selector: 'app-profilo',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './profilo.component.html',
-  styleUrls: ['./profilo.component.scss'],
+    selector: 'app-profilo',
+    imports: [CommonModule],
+    templateUrl: './profilo.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    styleUrls: ['./profilo.component.scss']
 })
 export class ProfiloComponent implements OnInit {
   private router = inject(Router);
@@ -30,7 +30,7 @@ export class ProfiloComponent implements OnInit {
 
   ngOnInit(): void {
     // I dati arrivano via router state (passati da DiagnosiComponent)
-    const nav = this.router.getCurrentNavigation()?.extras?.state;
+    const nav = this.router.currentNavigation()?.extras?.state;
     const dati = nav?.['dati'] as RispostaProfilo | undefined;
 
     // Fallback: recupera dallo history.state se il componente viene
