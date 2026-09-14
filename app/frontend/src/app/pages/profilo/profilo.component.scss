@@ -1,109 +1,200 @@
-// Stili per la schermata del profilo e micro-lezioni
-.profilo-container {
-  max-width: 560px;
-  margin: 0 auto;
-  padding: var(--space-lg);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xl);
+// Profilo in stile arcade CABINET: schermo "terminale risultati" scuro,
+// con pannelli CRT, barre neon e accenti coerenti col mini-gioco.
+
+// Sfondo scuro full-bleed (come retest/diagnosi); il contenuto resta
+// centrato con max-width, così i lati non appaiono "tagliati".
+.profilo-root {
+  width: 100%;
+  align-items: center;
+  overflow-x: hidden;
+  padding: var(--cb-space-md) var(--cb-space-sm) var(--cb-space-lg);
+  gap: var(--cb-space-md);
+  animation: cb-slide-up 0.4s ease-out both;
+
+  > * { width: 100%; max-width: 600px; }
 }
 
-.sezione-profilo {
-  .titolo { font-size: 1.6rem; font-weight: 800; margin-bottom: var(--space-xs); }
-  .sottotitolo { color: var(--color-muted); margin-bottom: var(--space-md); }
+// ── Hero ─────────────────────────────────────────────────────
+.profilo-hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+
+  .trofeo  { font-size: 3rem; line-height: 1; }
+  .titolo  { font-size: 1.8rem; margin: 0; }
+  .sottotitolo { color: var(--cb-muted); font-size: 0.9rem; }
 }
+
+// ── Griglia competenze ───────────────────────────────────────
+.sezione-profilo { display: flex; flex-direction: column; }
 
 .griglia-profilo {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--cb-space-sm);
 }
 
 .voce-profilo {
-  display: flex;
-  align-items: center;
-  gap: var(--space-md);
-  padding: var(--space-md);
+  border-left: 3px solid var(--cb-border);
 
-  .icona-livello { font-size: 1.5rem; flex-shrink: 0; }
-
-  .testi {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  .nome-concetto { font-weight: 600; font-size: 0.95rem; }
-  .etichetta-livello { font-size: 0.8rem; color: var(--color-muted); }
-
-  .barra-theta {
-    width: 80px;
-    height: 6px;
-    background: var(--color-border);
-    border-radius: var(--radius-full);
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  .fill-theta { height: 100%; border-radius: var(--radius-full); transition: width 0.6s ease; }
-  .fill-forte  { background: var(--color-success); }
-  .fill-medio  { background: var(--color-primary); }
-  .fill-debole { background: var(--color-warning); }
-
-  &.livello-debole { border-left: 3px solid var(--color-warning); }
-  &.livello-forte  { border-left: 3px solid var(--color-success); }
+  &.livello-forte  { border-left-color: var(--cb-correct); }
+  &.livello-medio  { border-left-color: var(--cb-neon-purp); }
+  &.livello-debole { border-left-color: var(--cb-neon-amber); }
 }
 
+.voce-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: var(--cb-space-sm);
+}
+
+.voce-left {
+  display: flex;
+  align-items: center;
+  gap: var(--cb-space-sm);
+}
+
+.icona-livello { font-size: 1.6rem; flex-shrink: 0; }
+
+.testi {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.nome-concetto { font-weight: 700; font-size: 1rem; color: var(--cb-text); }
+
+.pill-livello {
+  font-size: 0.6rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: var(--cb-radius-md);
+  letter-spacing: 0.15em;
+  border: 1px solid transparent;
+
+  &.pill-forte  { color: var(--cb-correct);   border-color: rgba(45, 212, 191, 0.5); text-shadow: 0 0 6px rgba(45, 212, 191, 0.6); }
+  &.pill-medio  { color: var(--cb-neon-purp); border-color: rgba(192, 132, 252, 0.5); text-shadow: 0 0 6px rgba(192, 132, 252, 0.6); }
+  &.pill-debole { color: var(--cb-neon-amber); border-color: rgba(251, 191, 36, 0.5); text-shadow: 0 0 6px rgba(251, 191, 36, 0.6); }
+}
+
+.barra-theta {
+  width: 100%;
+  height: 8px;
+  background: var(--cb-border);
+  border-radius: var(--cb-radius-md);
+  overflow: hidden;
+
+  .fill-theta { height: 100%; border-radius: var(--cb-radius-md); transition: width 0.8s ease-out; }
+  .fill-forte  { background: var(--cb-correct);   box-shadow: 0 0 8px var(--cb-correct); }
+  .fill-medio  { background: var(--cb-neon-purp); box-shadow: 0 0 8px var(--cb-neon-purp); }
+  .fill-debole { background: var(--cb-neon-amber); box-shadow: 0 0 8px var(--cb-neon-amber); }
+}
+
+// ── Lezioni ──────────────────────────────────────────────────
 .sezione-lezioni {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--cb-space-sm);
 
-  .titolo-lezioni { font-size: 1.2rem; font-weight: 700; }
+  .titolo-lezioni { font-size: 1.2rem; margin: 0; }
 }
 
-.lezione-card {
+.dot-indicator {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: center;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: var(--cb-border);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.12s, transform 0.12s, box-shadow 0.12s;
+
+  &.dot-attivo {
+    background: var(--cb-neon-cyan);
+    transform: scale(1.3);
+    box-shadow: 0 0 8px var(--cb-neon-cyan);
+  }
+  &:focus-visible { outline: 3px solid var(--cb-neon-cyan); outline-offset: 3px; }
+}
+
+.lezione-body {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: 0.75rem;
+  padding: var(--cb-space-sm);
+}
 
-  .badge-intensita {
-    display: inline-block;
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding: 2px 8px;
-    border-radius: var(--radius-full);
-    width: fit-content;
-  }
+.lezione-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
 
-  .badge-fondamenta { background: #FEF3C7; color: #92400E; }
-  .badge-rinforzo   { background: #E0E7FF; color: #3730A3; }
-  .badge-cenno      { background: #F0FDF4; color: #166534; }
+.badge-intensita {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 3px 10px;
+  border-radius: var(--cb-radius-md);
+  border: 1px solid transparent;
+  &.badge-fondamenta { color: var(--cb-neon-amber); border-color: rgba(251, 191, 36, 0.5); }
+  &.badge-rinforzo   { color: var(--cb-neon-purp); border-color: rgba(192, 132, 252, 0.5); }
+  &.badge-cenno      { color: var(--cb-correct);   border-color: rgba(45, 212, 191, 0.5); }
+}
 
-  .titolo-lezione { font-size: 1.1rem; font-weight: 700; }
-  .idea { font-size: 1rem; line-height: 1.6; }
+.concetto-tag {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--cb-muted);
+}
 
-  .esempio-box, .takeaway-box {
-    background: var(--color-bg);
-    border-radius: var(--radius-sm);
-    padding: var(--space-sm) var(--space-md);
-    font-size: 0.9rem;
-    line-height: 1.5;
-    color: var(--color-text);
-  }
+.titolo-lezione { font-size: 1.1rem; font-weight: 700; color: var(--cb-text); }
+.idea           { font-size: 0.95rem; line-height: 1.7; color: var(--cb-text); }
+
+.esempio-box, .takeaway-box {
+  background: var(--cb-accent);
+  border: 1px solid var(--cb-border);
+  border-radius: var(--cb-radius-md);
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--cb-text);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.box-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cb-neon-cyan);
 }
 
 .btn-avanti { width: 100%; }
 
-.nessuna-debolezza {
+// ── Nessuna debolezza ────────────────────────────────────────
+.nessuna-body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-md);
+  gap: var(--cb-space-sm);
   text-align: center;
+  padding: var(--cb-space-md) var(--cb-space-sm);
 
-  .grande-check { font-size: 3rem; }
+  .grande-icona { font-size: 3rem; }
+  .nessuna-testo { font-size: 0.95rem; line-height: 1.6; color: var(--cb-text); }
 }

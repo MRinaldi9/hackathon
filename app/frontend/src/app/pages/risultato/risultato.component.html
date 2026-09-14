@@ -1,60 +1,71 @@
-<!-- Schermata finale: evidenza before/after per i concetti migliorati -->
-<div class="risultato-container">
+<div class="arcade-root risultato-root">
 
+  <!-- Hero celebrate -->
   <div class="hero">
-    <span class="trofeo">🎓</span>
-    <h1 class="titolo">Ecco com'è andata</h1>
-    <p class="sottotitolo">
-      Confronto tra il tuo livello prima e dopo le micro-lezioni.
-    </p>
+    @if (tuttaMigliorata) {
+      <span class="trofeo" aria-hidden="true">🏆</span>
+      <h1 class="titolo neon-title">STAGE CLEAR!</h1>
+    } @else if (confronto.length === 0) {
+      <span class="trofeo" aria-hidden="true">💪</span>
+      <h1 class="titolo neon-title neon-title--cyan">SEI GIÀ UN ESPERTO</h1>
+    } @else {
+      <span class="trofeo" aria-hidden="true">📈</span>
+      <h1 class="titolo neon-title neon-title--cyan">I TUOI PROGRESSI</h1>
+    }
+    <p class="sottotitolo">Confronto tra il tuo livello prima e dopo le micro-lezioni.</p>
   </div>
 
-  <!-- Nessun concetto debole: sei già bravo -->
+  <!-- Nessun concetto debole -->
   @if (confronto.length === 0) {
-    <div class="card tutto-ok">
-      <span class="icona-grande">💪</span>
-      <p>Sei già forte su tutti i concetti finanziari. Nessun re-test necessario.</p>
+    <div class="arcade-panel tutto-ok">
+      <p class="tutto-ok-testo">Eri già forte su tutti i concetti finanziari. Nessun re-test necessario.</p>
     </div>
   }
 
   <!-- Confronto before/after per ogni concetto -->
   @for (c of confronto; track c.concetto) {
-    <div class="card confronto-card" [class.migliorato]="c.migliorato">
-      <div class="intestazione-confronto">
-        <span class="nome-concetto">{{ c.concetto | titlecase }}</span>
-        <span class="messaggio-delta" [class.positivo]="c.migliorato">
-          {{ messaggioDelta(c) }}
-        </span>
-      </div>
-
-      <!-- Barra Before -->
-      <div class="riga-theta">
-        <span class="etichetta-theta">Prima</span>
-        <div class="barra-theta">
-          <div class="fill-before" [style.width.%]="larghezzaBefore(c)"></div>
+    <div class="arcade-panel confronto-card" [class.migliorato]="c.migliorato">
+      <div class="confronto-body">
+        <div class="intestazione-confronto">
+          <span class="nome-concetto">{{ c.concetto | titlecase }}</span>
+          <span class="badge-esito" [class.badge-ok]="c.migliorato" [class.badge-no]="!c.migliorato">
+            {{ c.migliorato ? '✓ MIGLIORATO' : '→ CONTINUA' }}
+          </span>
         </div>
-        <span class="valore-theta">θ {{ c.before }}</span>
-      </div>
 
-      <!-- Barra After -->
-      <div class="riga-theta">
-        <span class="etichetta-theta">Dopo</span>
-        <div class="barra-theta">
-          <div class="fill-after" [style.width.%]="larghezzaAfter(c)"></div>
+        <!-- Prima -->
+        <div class="riga-theta">
+          <span class="etichetta-theta">Prima</span>
+          <div class="barra-theta" role="progressbar" [attr.aria-valuenow]="larghezzaBefore(c)" aria-valuemin="0" aria-valuemax="100">
+            <div class="fill-before" [style.width.%]="larghezzaBefore(c)"></div>
+          </div>
+          <span class="valore-theta">θ {{ c.before | number:'1.2-2' }}</span>
         </div>
-        <span class="valore-theta">θ {{ c.after }}</span>
-      </div>
 
-      <!-- Delta -->
-      <div class="delta-row" [class.positivo]="c.migliorato">
-        <span>Miglioramento: </span>
-        <strong>+{{ c.delta }} θ</strong>
+        <!-- Dopo -->
+        <div class="riga-theta">
+          <span class="etichetta-theta">Dopo</span>
+          <div class="barra-theta" role="progressbar" [attr.aria-valuenow]="larghezzaAfter(c)" aria-valuemin="0" aria-valuemax="100">
+            <div class="fill-after" [style.width.%]="larghezzaAfter(c)"></div>
+          </div>
+          <span class="valore-theta">θ {{ c.after | number:'1.2-2' }}</span>
+        </div>
+
+        <!-- Delta -->
+        @if (c.migliorato) {
+          <div class="delta-row">
+            <span class="delta-label">Miglioramento</span>
+            <span class="delta-value">+{{ c.delta | number:'1.2-2' }} θ</span>
+          </div>
+        }
       </div>
     </div>
   }
 
-  <button class="btn btn-primary btn-ricomincia" (click)="ricomincia()">
-    Ricomincia →
-  </button>
+  <div class="azioni">
+    <button class="arcade-btn" type="button" (click)="ricomincia()">
+      ↻ Inserisci gettone
+    </button>
+  </div>
 
 </div>

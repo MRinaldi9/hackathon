@@ -1,36 +1,37 @@
 <!-- Re-test: stesse gesture della diagnosi, ma item mai visti prima -->
-<div class="retest-container">
+<div class="arcade-root retest-root">
 
+  <!-- LOADING -->
   @if (caricamento) {
-    <div class="spinner-wrap">
-      <div class="spinner"></div>
-      <p>Preparando la verifica finale…</p>
+    <div class="arcade-loader" role="status" aria-live="polite" aria-label="Preparazione verifica finale">
+      <div class="arcade-loader-label" aria-hidden="true">VERIFICA FINALE…</div>
+      <div class="arcade-loader-track" aria-hidden="true">
+        <div class="arcade-loader-bar"></div>
+      </div>
     </div>
   }
 
+  <!-- GIOCO -->
   @if (!caricamento && item) {
-    <div class="header-retest">
-      <span class="badge-retest">Verifica finale</span>
-      <h2 class="titolo-retest">Vediamo se hai capito il meccanismo</h2>
-    </div>
+    <div class="game-screen">
 
-    <div class="card situazione-card">
-      <span class="tag-concetto">{{ item.concetto | titlecase }}</span>
-      <p class="testo-situazione">{{ item.testo }}</p>
-    </div>
+      <!-- trivio percorribile con accento ambra e badge verifica finale -->
+      <app-trivio
+        [item]="item"
+        accent="amber"
+        etichetta="VERIFICA FINALE"
+        [esito]="feedbackFlash"
+        (scelta)="scegli($event)">
+      </app-trivio>
 
-    <div class="opzioni">
-      @for (opzione of item.opzioni; track opzione.id) {
-        <button
-          class="btn-opzione"
-          [class.selezionata]="opzioneScelta === opzione.id"
-          [class.feedback-esatta]="feedback === 'esatta' && opzioneScelta === opzione.id"
-          [class.feedback-errata]="feedback === 'errata' && opzioneScelta === opzione.id"
-          [disabled]="!!opzioneScelta"
-          (click)="scegli(opzione.id)">
-          {{ opzione.testo }}
-        </button>
+      <!-- flash feedback overlay + annuncio screen-reader -->
+      @if (feedback) {
+        <div class="flash-overlay" [class.flash-correct]="feedback === 'esatta'" [class.flash-wrong]="feedback === 'errata'" aria-hidden="true"></div>
+        <div role="alert" class="sr-only">
+          {{ feedback === 'esatta' ? 'Risposta corretta!' : 'Risposta errata.' }}
+        </div>
       }
+
     </div>
   }
 

@@ -1,40 +1,62 @@
-<!-- Schermata di assessment adattivo: una situazione di vita alla volta -->
-<div class="diagnosi-container">
+<div class="game-root">
 
-  <!-- Spinner iniziale -->
-  @if (caricamento) {
-    <div class="spinner-wrap">
-      <div class="spinner"></div>
-      <p>Preparando la simulazione…</p>
+  <!-- INTRO -->
+  @if (mostraIntro) {
+    <div class="intro-screen">
+      <div class="cabinet-screen" role="img" aria-label="Schermata arcade FINFLOW - Simulazione di vita">
+        <div class="cabinet-title" aria-hidden="true">FINFLOW</div>
+        <div class="cabinet-subtitle" aria-hidden="true">SIMULAZIONE DI VITA</div>
+        <div class="insert-coin" aria-hidden="true">— TOCCA PER INIZIARE —</div>
+      </div>
+      <button class="start-btn" (click)="inizia()" type="button">INSERISCI GETTONE</button>
     </div>
   }
 
-  <!-- Simulazione in corso -->
-  @if (!caricamento && item) {
-    <!-- Indicatore di avanzamento (barra) -->
-    <div class="progress-bar">
-      <div class="progress-fill" [style.width.%]="(progresso / 10) * 100"></div>
+  <!-- LOADING -->
+  @if (!mostraIntro && caricamento) {
+    <div class="loader" role="status" aria-live="polite" aria-label="Caricamento in corso">
+      <div class="loader-label" aria-hidden="true">CARICAMENTO…</div>
+      <div class="loader-track" aria-hidden="true">
+        <div class="loader-bar"></div>
+      </div>
     </div>
+  }
 
-    <!-- Card situazione -->
-    <div class="card situazione-card">
-      <span class="tag-concetto">{{ item.concetto | titlecase }}</span>
-      <p class="testo-situazione">{{ item.testo }}</p>
-    </div>
+  <!-- GIOCO -->
+  @if (!mostraIntro && !caricamento && item) {
+    <div class="game-screen">
 
-    <!-- Opzioni di risposta (tap o swipe verso l'opzione) -->
-    <div class="opzioni">
-      @for (opzione of item.opzioni; track opzione.id) {
-        <button
-          class="btn-opzione"
-          [class.selezionata]="opzioneScelta === opzione.id"
-          [class.feedback-esatta]="feedback === 'esatta' && opzioneScelta === opzione.id"
-          [class.feedback-errata]="feedback === 'errata' && opzioneScelta === opzione.id"
-          [disabled]="!!opzioneScelta"
-          (click)="scegli(opzione.id)">
-          {{ opzione.testo }}
-        </button>
+      <!-- energy bar (senza numeri) -->
+      <div
+        class="energy-bar"
+        role="progressbar"
+        [attr.aria-valuenow]="progresso"
+        aria-valuemin="0"
+        aria-valuemax="8"
+        [attr.aria-label]="'Progresso: ' + progresso + ' di 8 domande'">
+        <div class="energy-fill" [style.width.%]="(progresso / 8) * 100"></div>
+      </div>
+
+      <!-- trivio percorribile (domanda + destinazioni A/B/C + avatar) -->
+      <app-trivio
+        [item]="item"
+        accent="purp"
+        [esito]="esitoFlash"
+        (scelta)="scegli($event)">
+      </app-trivio>
+
+      <!-- flash overlay (annuncio screen-reader) -->
+      @if (esitoFlash) {
+        <div
+          class="flash-overlay"
+          [class]="'flash-overlay flash-' + esitoFlash"
+          aria-hidden="true">
+        </div>
+        <div role="alert" class="sr-only">
+          {{ esitoFlash === 'correct' ? 'Risposta corretta!' : 'Risposta errata.' }}
+        </div>
       }
+
     </div>
   }
 

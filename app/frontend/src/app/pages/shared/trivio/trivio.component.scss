@@ -1,0 +1,273 @@
+// ============================================================
+// TrivioComponent — layout "trivio percorribile" in stile arcade CABINET.
+// Solo token --cb-* di styles.scss e primitivi .arcade-*: nessun nuovo
+// colore/font/libreria. L'accento (viola/ambra) è pilotato da --tr-accent.
+// ============================================================
+
+.trivio {
+  --tr-accent: var(--cb-neon-purp);
+  --tr-accent-rgb: 192, 132, 252;
+
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+  overflow: hidden;
+
+  &--amber {
+    --tr-accent: var(--cb-neon-amber);
+    --tr-accent-rgb: 251, 191, 36;
+  }
+  &--purp {
+    --tr-accent: var(--cb-neon-purp);
+    --tr-accent-rgb: 192, 132, 252;
+  }
+}
+
+// ── ZONA DOMANDA ─────────────────────────────────────────────
+.trivio-domanda {
+  flex: 0 0 auto;
+  background: var(--cb-surface);
+  border-bottom: 1px solid var(--cb-border);
+  padding: calc(var(--cb-space-sm) + 6px) var(--cb-space-sm) var(--cb-space-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.6rem;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 -20px 40px rgba(0, 0, 0, 0.3);
+  animation: cb-slide-up 0.4s ease-out both;
+
+  // scanline overlay CRT
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 3px,
+      rgba(0, 0, 0, 0.08) 3px, rgba(0, 0, 0, 0.08) 4px
+    );
+    pointer-events: none;
+    animation: cb-scanline 12s linear infinite;
+  }
+
+  > * { position: relative; z-index: 1; }
+}
+
+.trivio-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--tr-accent);
+  text-shadow: 0 0 8px var(--tr-accent);
+  border: 1px solid rgba(var(--tr-accent-rgb), 0.4);
+  border-radius: var(--cb-radius-md);
+  padding: 0.4rem 1rem;
+  animation: cb-neon-pulse 2.4s ease-in-out infinite;
+}
+
+.trivio-testo {
+  font-size: clamp(1rem, 4vw, 1.3rem);
+  font-weight: 500;
+  line-height: 1.55;
+  color: var(--cb-text);
+  margin: 0;
+  max-width: 600px;
+}
+
+// ── RIGA DESTINAZIONI (A B C) ────────────────────────────────
+.trivio-destinazioni {
+  flex: 0 0 auto;
+  display: flex;
+  gap: var(--cb-space-sm);
+  padding: var(--cb-space-sm);
+  justify-content: center;
+}
+
+.trivio-dest {
+  flex: 1 1 0;
+  max-width: 220px;
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(var(--tr-accent-rgb), 0.06);
+  border: 2px solid var(--tr-accent);
+  border-radius: var(--cb-radius-md);
+  color: var(--cb-text);
+  font-family: var(--cb-font);
+  font-size: clamp(0.75rem, 2.6vw, 0.95rem);
+  font-weight: 500;
+  text-align: center;
+  padding: 0.75rem 0.6rem;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(var(--tr-accent-rgb), 0.25);
+  transition: box-shadow 0.15s, background 0.15s, transform 0.1s;
+  touch-action: manipulation;
+
+  &:hover:not(:disabled) {
+    background: rgba(var(--tr-accent-rgb), 0.14);
+    box-shadow: 0 0 24px rgba(var(--tr-accent-rgb), 0.55);
+  }
+  &:focus-visible {
+    outline: 3px solid var(--cb-neon-cyan);
+    outline-offset: 3px;
+    box-shadow: none;
+  }
+  &:active:not(:disabled) { transform: scale(0.97); }
+  &:disabled { cursor: not-allowed; }
+
+  &.selected {
+    background: rgba(var(--tr-accent-rgb), 0.18);
+    box-shadow: 0 0 28px rgba(var(--tr-accent-rgb), 0.6);
+  }
+
+  // Glow di destinazione guidato dall'esito.
+  &.flash-correct {
+    border-color: var(--cb-correct);
+    background: rgba(45, 212, 191, 0.2);
+    box-shadow: 0 0 30px rgba(45, 212, 191, 0.6);
+    color: var(--cb-text);
+  }
+  &.flash-wrong {
+    border-color: var(--cb-wrong);
+    background: rgba(248, 113, 113, 0.2);
+    box-shadow: 0 0 30px rgba(248, 113, 113, 0.6);
+    color: var(--cb-text);
+  }
+}
+
+.trivio-dest-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--tr-accent);
+  font-weight: 900;
+  letter-spacing: 0;
+  color: var(--tr-accent);
+  text-shadow: 0 0 6px var(--tr-accent);
+}
+
+.trivio-dest-text { display: block; }
+
+// ── ARENA (biforcazione + avatar) ────────────────────────────
+.trivio-arena {
+  // Altezza contenuta: percorsi più corti (le "vie" non riempiono tutto
+  // il viewport residuo, così la camminata resta breve e leggibile).
+  flex: 1 1 auto;
+  position: relative;
+  overflow: visible;
+  min-height: 220px;
+  max-height: 42vh;
+  background: var(--cb-bg);
+}
+
+.trivio-strade {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.trivio-strada {
+  fill: none;
+  stroke: var(--tr-accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.55;
+  filter: drop-shadow(0 0 4px rgba(var(--tr-accent-rgb), 0.7));
+  transition: opacity 0.2s, stroke-width 0.2s;
+
+  &.strada-attiva {
+    opacity: 1;
+    stroke-width: 4;
+    filter: drop-shadow(0 0 8px var(--tr-accent));
+  }
+}
+
+// ── AVATAR ARCADE (CSS/SVG neon) ─────────────────────────────
+.trivio-avatar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 42px;
+  height: 62px;
+  offset-rotate: 0deg;           // resta dritto lungo il percorso
+  offset-distance: 0%;
+  // Camminata lenta e leggibile (resta dentro la finestra del parent).
+  transition: offset-distance 1s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 0 8px var(--tr-accent));
+  pointer-events: none;
+
+  // Reset al nuovo item: nessuna transizione, l'avatar scatta in basso.
+  &.no-anim { transition: none; }
+}
+
+.avatar-head {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: var(--tr-accent);
+  box-shadow: 0 0 8px var(--tr-accent);
+}
+
+.avatar-body {
+  position: absolute;
+  top: 21px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 23px;
+  border-radius: 3px;
+  background: var(--tr-accent);
+}
+
+.avatar-leg {
+  position: absolute;
+  top: 43px;
+  left: 50%;
+  width: 6px;
+  height: 18px;
+  border-radius: 3px;
+  background: var(--tr-accent);
+  transform-origin: top center;
+
+  &--l { transform: translateX(-100%) rotate(12deg); }
+  &--r { transform: translateX(0) rotate(-12deg); }
+}
+
+// Camminata a 2 frame (steps): le gambe si alternano.
+.is-walking .avatar-leg--l {
+  animation: tr-step-l 0.3s steps(2, jump-none) infinite;
+}
+.is-walking .avatar-leg--r {
+  animation: tr-step-r 0.3s steps(2, jump-none) infinite;
+}
+
+// ── KEYFRAMES ────────────────────────────────────────────────
+@keyframes tr-step-l {
+  0%   { transform: translateX(-100%) rotate(20deg); }
+  100% { transform: translateX(-100%) rotate(-16deg); }
+}
+@keyframes tr-step-r {
+  0%   { transform: translateX(0) rotate(-16deg); }
+  100% { transform: translateX(0) rotate(20deg); }
+}
+
+// Motion ridotto: nessuna camminata, l'avatar scatta a destinazione.
+@media (prefers-reduced-motion: reduce) {
+  .trivio-avatar { transition: none; }
+  .is-walking .avatar-leg--l,
+  .is-walking .avatar-leg--r { animation: none; }
+}

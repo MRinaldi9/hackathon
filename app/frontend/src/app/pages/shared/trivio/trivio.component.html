@@ -1,0 +1,69 @@
+<div class="trivio" [class.trivio--purp]="accent === 'purp'" [class.trivio--amber]="accent === 'amber'">
+
+  @if (item) {
+
+    <!-- ZONA DOMANDA -->
+    <div class="trivio-domanda" aria-live="polite" aria-atomic="true">
+      @if (etichetta) {
+        <span class="trivio-badge" aria-hidden="true">★ {{ etichetta }} ★</span>
+      }
+      <span
+        class="arcade-chip"
+        [class.arcade-chip--amber]="accent === 'amber'"
+        [class.arcade-chip--purp]="accent === 'purp'">{{ item.concetto | uppercase }}</span>
+      <p class="trivio-testo">{{ item.testo }}</p>
+    </div>
+
+    <!-- RIGA DESTINAZIONI A B C -->
+    <div
+      class="trivio-destinazioni"
+      role="group"
+      [attr.aria-label]="'Scegli una destinazione per: ' + item.testo"
+      (keydown)="onKeydown($event)">
+      @for (opzione of item.opzioni; track opzione.id; let i = $index) {
+        <button
+          class="trivio-dest"
+          [class.selected]="selIndex === i"
+          [class.flash-correct]="esito === 'correct' && selIndex === i"
+          [class.flash-wrong]="esito === 'wrong' && selIndex === i"
+          [disabled]="selIndex !== null"
+          [attr.aria-pressed]="selIndex === i"
+          [attr.aria-label]="opzione.testo"
+          (click)="scegliOpzione(i, opzione.id)"
+          type="button">
+          <span class="trivio-dest-letter" aria-hidden="true">{{ lettera(i) }}</span>
+          <span class="trivio-dest-text">{{ opzione.testo }}</span>
+        </button>
+      }
+    </div>
+
+    <!-- ARENA: biforcazione (strade neon) + avatar -->
+    <div class="trivio-arena" #arena>
+      @if (percorsi.length) {
+        <svg class="trivio-strade" width="100%" height="100%" aria-hidden="true">
+          @for (d of percorsi; track $index) {
+            <path
+              class="trivio-strada"
+              [class.strada-attiva]="selIndex === $index"
+              [attr.d]="d"></path>
+          }
+        </svg>
+
+        <!-- omino avatar arcade (CSS/SVG neon) -->
+        <div
+          class="trivio-avatar"
+          [class.is-walking]="cammina"
+          [class.no-anim]="senzaTransizione"
+          [ngStyle]="{ 'offset-path': avatarPath(), 'offset-distance': cammina ? '100%' : '0%' }"
+          aria-hidden="true">
+          <span class="avatar-head"></span>
+          <span class="avatar-body"></span>
+          <span class="avatar-leg avatar-leg--l"></span>
+          <span class="avatar-leg avatar-leg--r"></span>
+        </div>
+      }
+    </div>
+
+  }
+
+</div>
