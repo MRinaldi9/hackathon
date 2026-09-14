@@ -1,33 +1,39 @@
-import { Component, ChangeDetectionStrategy, ChangeDetectorRef, inject, ElementRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  inject,
+  ElementRef,
+} from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { Router } from "@angular/router";
 
 import {
   AssessmentService,
   Item,
   RispostaProfilo,
-} from '../../services/assessment.service';
+} from "../../services/assessment.service";
 
 @Component({
-  selector: 'app-diagnosi',
+  selector: "app-diagnosi",
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './diagnosi.component.html',
-  styleUrls: ['./diagnosi.component.scss'],
+  templateUrl: "./diagnosi.component.html",
+  styleUrls: ["./diagnosi.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DiagnosiComponent {
-  private svc    = inject(AssessmentService);
+  private svc = inject(AssessmentService);
   private router = inject(Router);
-  private cdr    = inject(ChangeDetectorRef);
-  private elRef  = inject(ElementRef);
+  private cdr = inject(ChangeDetectorRef);
+  private elRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
-  mostraIntro  = true;
+  mostraIntro = true;
   item: Item | null = null;
-  progresso    = 0;
-  caricamento  = false;
+  progresso = 0;
+  caricamento = false;
   panelSelezionato: string | null = null;
-  esitoFlash: 'correct' | 'wrong' | null = null;
+  esitoFlash: "correct" | "wrong" | null = null;
   risposteGiuste = 0;
   animaCard = false;
 
@@ -55,7 +61,7 @@ export class DiagnosiComponent {
     this.svc.sendAnswer(this.item!.id, opzioneId).subscribe({
       next: (res) => {
         const esatto = (res as any).esatto as boolean;
-        this.esitoFlash = esatto ? 'correct' : 'wrong';
+        this.esitoFlash = esatto ? "correct" : "wrong";
         if (esatto) this.risposteGiuste++;
         this.cdr.markForCheck();
         setTimeout(() => {
@@ -63,7 +69,7 @@ export class DiagnosiComponent {
           this.cdr.markForCheck();
         }, 900);
       },
-      error: (err) => console.error('Errore risposta:', err),
+      error: (err) => console.error("Errore risposta:", err),
     });
   }
 
@@ -71,13 +77,13 @@ export class DiagnosiComponent {
     this.panelSelezionato = null;
     this.esitoFlash = null;
 
-    if (res.fase === 'diagnosi') {
+    if (res.fase === "diagnosi") {
       this.item = res.item;
       this.progresso = res.progresso ?? this.progresso + 1;
       this.triggerAnimation();
-    } else if (res.fase === 'profilo') {
+    } else if (res.fase === "profilo") {
       const dati = res as RispostaProfilo;
-      this.router.navigate(['/profilo'], { state: { dati } });
+      this.router.navigate(["/profilo"], { state: { dati } });
     }
   }
 
@@ -90,8 +96,10 @@ export class DiagnosiComponent {
       // Il timeout aggiuntivo lascia tempo ad Angular di renderizzare
       // i nuovi pulsanti con [disabled] rimosso prima di cercarli nel DOM.
       setTimeout(() => {
-        const firstBtn = this.elRef.nativeElement
-          .querySelector<HTMLButtonElement>('.option-band:not([disabled])');
+        const firstBtn =
+          this.elRef.nativeElement.querySelector<HTMLButtonElement>(
+            ".option-band:not([disabled])",
+          );
         firstBtn?.focus();
       }, 80);
     }, 30);
