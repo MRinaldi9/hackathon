@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -8,6 +8,7 @@ import { Confronto } from '../../services/assessment.service';
     selector: 'app-risultato',
     imports: [CommonModule],
     templateUrl: './risultato.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./risultato.component.scss']
 })
 export class RisultatoComponent implements OnInit {

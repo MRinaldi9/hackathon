@@ -4,7 +4,7 @@
 // Riceve i dati dalla navigazione (router state) impostato da DiagnosiComponent.
 // Dopo che l'utente ha letto le lezioni, naviga a /retest.
 // ============================================================
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -14,6 +14,7 @@ import { VoceProfilo, Lezione, RispostaProfilo } from '../../services/assessment
     selector: 'app-profilo',
     imports: [CommonModule],
     templateUrl: './profilo.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./profilo.component.scss']
 })
 export class ProfiloComponent implements OnInit {

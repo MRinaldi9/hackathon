@@ -1,7 +1,7 @@
 import { provideZoneChangeDetection } from "@angular/core";
 // Punto di ingresso dell'applicazione Angular (standalone bootstrap)
 import { bootstrapApplication } from '@angular/platform-browser';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withXhr } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
@@ -10,7 +10,7 @@ import { routes } from './app/app.routes';
 
 bootstrapApplication(AppComponent, {
   providers: [
-    provideZoneChangeDetection(),provideHttpClient(),
+    provideZoneChangeDetection(),provideHttpClient(withXhr()),
     provideRouter(routes),
     provideAnimations(),
   ],

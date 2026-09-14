@@ -10,7 +10,7 @@
 //   2. L'utente risponde ad ogni item
 //   3. Quando il backend restituisce fase:'risultato', naviga a /risultato
 // ============================================================
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -20,6 +20,7 @@ import { AssessmentService, Item, RispostaFinale } from '../../services/assessme
     selector: 'app-retest',
     imports: [CommonModule],
     templateUrl: './retest.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./retest.component.scss']
 })
 export class RetestComponent implements OnInit {
