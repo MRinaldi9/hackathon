@@ -15,34 +15,14 @@
   @if (!caricamento && item) {
     <div class="game-screen">
 
-      <!-- badge fase -->
-      <div class="fase-bar">
-        <span class="fase-badge">★ VERIFICA FINALE ★</span>
-      </div>
-
-      <!-- situation panel -->
-      <div class="situation-panel" aria-live="polite" aria-atomic="true">
-        <span class="arcade-chip arcade-chip--amber">{{ item.concetto | uppercase }}</span>
-        <p class="situation-text">{{ item.testo }}</p>
-        <span class="hint" aria-hidden="true">— Hai capito il meccanismo? —</span>
-      </div>
-
-      <!-- options area -->
-      <div class="options-area" role="group" [attr.aria-label]="'Scegli una risposta per: ' + item.testo">
-        @for (opzione of item.opzioni; track opzione.id) {
-          <button
-            class="option-band"
-            [class.selected]="opzioneScelta === opzione.id"
-            [class.flash-correct]="feedback === 'esatta' && opzioneScelta === opzione.id"
-            [class.flash-wrong]="feedback === 'errata' && opzioneScelta === opzione.id"
-            [disabled]="!!opzioneScelta"
-            [attr.aria-pressed]="opzioneScelta === opzione.id"
-            (click)="scegli(opzione.id)"
-            type="button">
-            <span class="option-text">{{ opzione.testo }}</span>
-          </button>
-        }
-      </div>
+      <!-- trivio percorribile con accento ambra e badge verifica finale -->
+      <app-trivio
+        [item]="item"
+        accent="amber"
+        etichetta="VERIFICA FINALE"
+        [esito]="feedbackFlash"
+        (scelta)="scegli($event)">
+      </app-trivio>
 
       <!-- flash feedback overlay + annuncio screen-reader -->
       @if (feedback) {

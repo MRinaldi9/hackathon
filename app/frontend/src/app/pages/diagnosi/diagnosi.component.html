@@ -37,28 +37,13 @@
         <div class="energy-fill" [style.width.%]="(progresso / 8) * 100"></div>
       </div>
 
-      <!-- situation panel -->
-      <div class="situation-panel" [class.slide-up]="animaCard" aria-live="polite" aria-atomic="true">
-        <span class="concept-chip">{{ item.concetto | uppercase }}</span>
-        <p class="situation-text">{{ item.testo }}</p>
-      </div>
-
-      <!-- options area -->
-      <div class="options-area" role="group" [attr.aria-label]="'Scegli una risposta per: ' + item.testo">
-        @for (opzione of item.opzioni; track opzione.id) {
-          <button
-            class="option-band"
-            [class.selected]="panelSelezionato === opzione.id"
-            [class.flash-correct]="esitoFlash === 'correct' && panelSelezionato === opzione.id"
-            [class.flash-wrong]="esitoFlash === 'wrong' && panelSelezionato === opzione.id"
-            [disabled]="!!panelSelezionato"
-            [attr.aria-pressed]="panelSelezionato === opzione.id"
-            (click)="scegli(opzione.id)"
-            type="button">
-            <span class="option-text">{{ opzione.testo }}</span>
-          </button>
-        }
-      </div>
+      <!-- trivio percorribile (domanda + destinazioni A/B/C + avatar) -->
+      <app-trivio
+        [item]="item"
+        accent="purp"
+        [esito]="esitoFlash"
+        (scelta)="scegli($event)">
+      </app-trivio>
 
       <!-- flash overlay (annuncio screen-reader) -->
       @if (esitoFlash) {
