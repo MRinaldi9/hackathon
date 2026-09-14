@@ -17,11 +17,10 @@ import { Router } from '@angular/router';
 import { AssessmentService, Item, RispostaFinale } from '../../services/assessment.service';
 
 @Component({
-  selector: 'app-retest',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './retest.component.html',
-  styleUrls: ['./retest.component.scss'],
+    selector: 'app-retest',
+    imports: [CommonModule],
+    templateUrl: './retest.component.html',
+    styleUrls: ['./retest.component.scss']
 })
 export class RetestComponent implements OnInit {
   private svc    = inject(AssessmentService);

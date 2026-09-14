@@ -11,11 +11,10 @@ import { Router } from '@angular/router';
 import { VoceProfilo, Lezione, RispostaProfilo } from '../../services/assessment.service';
 
 @Component({
-  selector: 'app-profilo',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './profilo.component.html',
-  styleUrls: ['./profilo.component.scss'],
+    selector: 'app-profilo',
+    imports: [CommonModule],
+    templateUrl: './profilo.component.html',
+    styleUrls: ['./profilo.component.scss']
 })
 export class ProfiloComponent implements OnInit {
   private router = inject(Router);

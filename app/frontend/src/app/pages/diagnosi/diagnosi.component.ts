@@ -15,12 +15,11 @@ import {
 } from "../../services/assessment.service";
 
 @Component({
-  selector: "app-diagnosi",
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: "./diagnosi.component.html",
-  styleUrls: ["./diagnosi.component.scss"],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: "app-diagnosi",
+    imports: [CommonModule],
+    templateUrl: "./diagnosi.component.html",
+    styleUrls: ["./diagnosi.component.scss"],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DiagnosiComponent {
   private svc = inject(AssessmentService);

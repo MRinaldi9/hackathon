@@ -5,11 +5,10 @@ import { Router } from '@angular/router';
 import { Confronto } from '../../services/assessment.service';
 
 @Component({
-  selector: 'app-risultato',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './risultato.component.html',
-  styleUrls: ['./risultato.component.scss'],
+    selector: 'app-risultato',
+    imports: [CommonModule],
+    templateUrl: './risultato.component.html',
+    styleUrls: ['./risultato.component.scss']
 })
 export class RisultatoComponent implements OnInit {
   private router = inject(Router);
