@@ -38,10 +38,11 @@ dà **mai** consigli finanziari (niente "risparmia", "non fare abbonamenti").
 - Dev con `node --watch` (nessun transpiler, JS puro)
 
 ### Frontend — `app/frontend/`
-- **Angular** `^17.3.0` — **standalone components**, **zone.js**
-- **RxJS** `~7.8.0`, **TypeScript** `~5.4.0` (target/module **ES2022**)
+- **Angular** `^22.1.6` — **standalone components**, **zone.js** `~0.15.1`
+- **RxJS** `~7.8.0`, **TypeScript** `~6.0.3` (target/module **ES2022**)
 - **SCSS** (design system in `src/styles.scss`)
-- Angular CLI `^17.3.0`, builder `@angular-devkit/build-angular:application`
+- Angular CLI `^22.1.8`, builder `@angular/build:application`
+- Test runner: **Vitest** `^4` + jsdom (integrato in `@angular/build:unit-test`)
 - Dev server con **proxy** verso il backend (`proxy.conf.json`)
 
 ### Tooling agentico
@@ -266,8 +267,9 @@ Nessuna `ANTHROPIC_API_KEY` o segreto è richiesto a runtime.
 - ❌ **Non regredire l'accessibilità**: mantenere gestione del focus, ARIA
   (`role`, `aria-pressed`, `aria-live`), target ≥ 44px e fallback
   `prefers-reduced-motion` (rivedibili con l'agente `wcag-accessibility`).
-- ❌ **Non superare i budget di build**: `anyComponentStyle` warning 2kb / error
-  4kb, initial warning 500kb / error 1mb (`angular.json`).
+- ❌ **Non superare i budget di build**: `anyComponentStyle` warning 30kb / error
+  50kb, initial warning 500kb / error 1mb (`angular.json`). I budget dei componenti
+  sono stati rilassati dopo l'introduzione del tema arcade CABINET 07 — TILT.
 - ❌ **Non violare la separazione degli agenti**: `content-agent` tocca solo
   `content.js`, `assessment-agent` solo `engine.js`, `profilo-agent` solo
   profilo/before-after.
@@ -294,7 +296,8 @@ Nessuna `ANTHROPIC_API_KEY` o segreto è richiesto a runtime.
   documentale: la fonte di verità è `app/backend/src/`.
 
 ### Git / branch
-- Branch di lavoro corrente: `feature/fe-design-system`; branch principale `main`.
+- Branch principale (e corrente): `main`. La `feature/fe-design-system` è stata
+  mergiata (PR #4) e include il tema arcade CABINET 07 — TILT su tutte le fasi.
 - `package-lock.json` è **in `.gitignore`** (scelta del progetto): non forzarne il
   commit.
 

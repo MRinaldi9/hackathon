@@ -129,7 +129,7 @@ Lo stato di sessione è **esternalizzato rispetto al client**: vive nel backend,
 
 ## Prerequisiti
 
-- **Node.js** ≥ 18 (per l'ES module `--watch` del backend e Angular 17) e **npm** ≥ 9.
+- **Node.js** ≥ 20 (richiesto da Angular 22 e dall'ES module `--watch` del backend) e **npm** ≥ 9.
 - Il **backend non richiede alcuna chiave API**: il motore di stima è deterministico e locale, non chiama alcun LLM a runtime.
 - **Claude Code** con un account Anthropic autenticato serve *solo* per usare il team di agenti di sviluppo (`.claude/agents/`), non per eseguire l'app.
 - Facoltativo: **Angular CLI** (`@angular/cli`) globale se preferisci il comando `ng`; altrimenti sono usati gli script npm locali. L'MCP `angular-cli` (`.mcp.json`) è usato dagli agenti di frontend.
@@ -165,6 +165,7 @@ Comandi utili:
 | `npm run dev:backend` | Solo backend Fastify (`node --watch`) |
 | `npm run dev:frontend` | Solo frontend Angular (`ng serve`) |
 | `npm run build` | Build di produzione del frontend |
+| `npm test` | Esegue i test unitari del frontend (Vitest + jsdom) |
 
 ## Variabili d'ambiente
 
@@ -236,7 +237,7 @@ hackathon/
 │   │       ├── engine.js         #   motore IRT/Rasch + 4 endpoint Fastify
 │   │       └── content.js        #   16 item (4 per concetto) + micro-lezioni
 │   │
-│   └── frontend/                 # Angular 17 standalone, signals, OnPush
+│   └── frontend/                 # Angular 22 standalone, signals, OnPush, tema arcade CABINET 07
 │       ├── proxy.conf.json       #   proxy dev /start,/next,/retest → :3000
 │       └── src/app/
 │           ├── app.routes.ts     #   diagnosi → profilo → retest → risultato

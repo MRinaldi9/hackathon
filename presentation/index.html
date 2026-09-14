@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinFlow — Inclusione Finanziaria · Hagenthon</title>
+<style>
+/* ─── Reset & base ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; }
+
+/* ─── Token Accenture ───────────────────────────────────────────── */
+:root {
+  --ac-purple:       #A100FF;
+  --ac-purple-dark:  #7500C0;
+  --ac-purple-light: #B24BFF;
+  --ac-black:        #000000;
+  --ac-white:        #FFFFFF;
+  --ac-grey-dark:    #1A1A1A;
+  --ac-grey:         #96968C;
+  --ac-grey-light:   #F2F2F2;
+  --ac-grey-mid:     #2A2A2A;
+
+  --slide-duration: 0.55s;
+  --ease: cubic-bezier(0.77,0,0.175,1);
+}
+
+/* ─── Viewport & slider ─────────────────────────────────────────── */
+#viewport {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--ac-black);
+  position: relative;
+}
+
+#slider {
+  display: flex;
+  height: 100%;
+  transition: transform var(--slide-duration) var(--ease);
+  will-change: transform;
+}
+
+/* ─── Slide comune ──────────────────────────────────────────────── */
+.slide {
+  flex: 0 0 100vw;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: clamp(40px, 6vw, 80px) clamp(48px, 8vw, 120px);
+  position: relative;
+  overflow: hidden;
+}
+
+/* sfondo dark di default */
+.slide { background: var(--ac-black); color: var(--ac-white); }
+.slide.light { background: var(--ac-white); color: var(--ac-black); }
+.slide.dark-mid { background: var(--ac-grey-dark); color: var(--ac-white); }
+
+/* ─── Decorazione ">" (firma Accenture) ────────────────────────── */
+.gt-deco {
+  position: absolute;
+  right: -0.05em;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: clamp(280px, 28vw, 520px);
+  font-weight: 900;
+  color: rgba(161,0,255,0.06);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.05em;
+}
+.gt-deco-sm {
+  position: absolute;
+  right: 8vw;
+  bottom: 8vh;
+  font-size: clamp(80px, 10vw, 180px);
+  font-weight: 900;
+  color: rgba(161,0,255,0.10);
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ─── Topbar ────────────────────────────────────────────────────── */
+.topbar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--ac-purple);
+}
+
+/* ─── Logo / brand strip ────────────────────────────────────────── */
+.brand {
+  position: absolute;
+  top: clamp(20px,3vw,36px);
+  right: clamp(32px,5vw,80px);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0.75;
+}
+.brand-gt {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--ac-purple);
+  line-height: 1;
+}
+.brand-name {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: inherit;
+  opacity: 0.6;
+}
+
+/* ─── Slide counter ─────────────────────────────────────────────── */
+#slide-counter {
+  position: fixed;
+  bottom: 28px;
+  right: 40px;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.35);
+  z-index: 100;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+#slide-counter.on-light { color: rgba(0,0,0,0.3); }
+
+/* ─── Dot nav ───────────────────────────────────────────────────── */
+#dots {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 100;
+}
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  transition: background 0.3s, transform 0.3s;
+  cursor: pointer;
+}
+.dot.active {
+  background: var(--ac-purple);
+  transform: scale(1.5);
+}
+.dot.on-light { background: rgba(0,0,0,0.2); }
+.dot.on-light.active { background: var(--ac-purple); }
+
+/* ─── Arrow nav ─────────────────────────────────────────────────── */
+.nav-btn {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 16px;
+  z-index: 100;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+  color: var(--ac-white);
+}
+.nav-btn:hover { opacity: 1; }
+.nav-btn.on-light { color: var(--ac-black); }
+#nav-prev { left: 16px; }
+#nav-next { right: 16px; }
+.nav-btn svg { width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+/* ─── Tipografia ────────────────────────────────────────────────── */
+.eyebrow {
+  font-size: clamp(11px, 1.1vw, 14px);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ac-purple);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.eyebrow::before { content: '>'; font-weight: 900; }
+
+h1.slide-title {
+  font-size: clamp(38px, 5.5vw, 88px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  max-width: 14ch;
+  margin-bottom: 28px;
+}
+h2.slide-title {
+  font-size: clamp(28px, 4vw, 64px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+  max-width: 22ch;
+  margin-bottom: 24px;
+}
+.slide-subtitle {
+  font-size: clamp(14px, 1.5vw, 20px);
+  font-weight: 400;
+  line-height: 1.6;
+  max-width: 52ch;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 0;
+}
+.slide.light .slide-subtitle { color: rgba(0,0,0,0.55); }
+
+.accent { color: var(--ac-purple); }
+.accent-dark { color: var(--ac-purple-dark); }
+
+/* ─── Pill / tag ────────────────────────────────────────────────── */
+.pill {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(161,0,255,0.15);
+  color: var(--ac-purple-light);
+  border: 1px solid rgba(161,0,255,0.3);
+  margin-bottom: 28px;
+}
+
+/* ─── SLIDE 1 — Copertina ───────────────────────────────────────── */
+.cover-logo-gt {
+  font-size: clamp(48px, 7vw, 96px);
+  font-weight: 900;
+  color: var(--ac-purple);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.cover-accenture {
+  font-size: clamp(11px, 1vw, 14px);
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 52px;
+}
+.cover-title {
+  font-size: clamp(52px, 7.5vw, 110px);
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: -0.04em;
+  margin-bottom: 18px;
+}
+.cover-sub {
+  font-size: clamp(16px, 1.8vw, 24px);
+  font-weight: 300;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.6);
+  max-width: 44ch;
+}
+.cover-badge {
+  position: absolute;
+  bottom: clamp(40px,5vh,60px);
+  left: clamp(48px,8vw,120px);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+
+/* ─── Due colonne ────────────────────────────────────────────────── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(32px, 4vw, 64px);
+  width: 100%;
+  max-width: 1100px;
+}
+.two-col-3-2 {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: clamp(32px, 4vw, 64px);
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* ─── Card feature ───────────────────────────────────────────────── */
+.feature-card {
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: clamp(20px, 2.5vw, 32px);
+  background: rgba(255,255,255,0.03);
+  position: relative;
+}
+.feature-card.highlight {
+  border-color: rgba(161,0,255,0.35);
+  background: rgba(161,0,255,0.06);
+}
+.feature-card h3 {
+  font-size: clamp(16px, 1.6vw, 22px);
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.feature-card p {
+  font-size: clamp(12px, 1.1vw, 15px);
+  line-height: 1.6;
+  color: rgba(255,255,255,0.6);
+}
+.card-icon {
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+/* ─── Stat tile ──────────────────────────────────────────────────── */
+.stat-row {
+  display: flex;
+  gap: clamp(24px, 3vw, 48px);
+  margin-top: 36px;
+}
+.stat {
+  text-align: left;
+}
+.stat-num {
+  font-size: clamp(32px, 4vw, 56px);
+  font-weight: 900;
+  color: var(--ac-purple);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.stat-label {
+  font-size: clamp(10px, 0.9vw, 13px);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-top: 4px;
+}
+
+/* ─── SLIDE 4 — Architettura ─────────────────────────────────────── */
+.arch-diagram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  max-width: 900px;
+}
+
+/* Orchestratore */
+.arch-orch {
+  background: linear-gradient(135deg, var(--ac-purple-dark), var(--ac-purple));
+  color: var(--ac-white);
+  border-radius: 10px;
+  padding: 14px 32px;
+  font-size: clamp(12px, 1.2vw, 15px);
+  font-weight: 700;
+  text-align: center;
+  position: relative;
+  width: 280px;
+  box-shadow: 0 0 32px rgba(161,0,255,0.4);
+}
+.arch-orch .model-badge {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.7;
+  letter-spacing: 0.1em;
+  margin-top: 3px;
+}
+
+/* Frecce verticali */
+.arch-arrow-v {
+  width: 2px;
+  height: 24px;
+  background: var(--ac-purple);
+  position: relative;
+  margin: 0 auto;
+}
+.arch-arrow-v::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid var(--ac-purple);
+}
+
+/* Grid agenti */
+.arch-agents-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+/* Linea di connessione orizzontale */
+.arch-h-line {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--ac-purple), transparent);
+  margin: 0;
+  position: relative;
+}
+
+/* Singolo agente */
+.arch-agent {
+  border: 1px solid rgba(161,0,255,0.3);
+  border-radius: 8px;
+  padding: 12px 8px;
+  background: rgba(161,0,255,0.05);
+  text-align: center;
+  position: relative;
+}
+.arch-agent.gate {
+  border-color: rgba(255,180,0,0.5);
+  background: rgba(255,180,0,0.05);
+}
+.arch-agent-name {
+  font-size: clamp(9px, 0.9vw, 12px);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.arch-agent-domain {
+  font-size: clamp(8px, 0.75vw, 10px);
+  color: rgba(255,255,255,0.45);
+  line-height: 1.3;
+}
+.arch-agent-badge {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 7px;
+  border-radius: 100px;
+  background: rgba(161,0,255,0.2);
+  color: var(--ac-purple-light);
+}
+.arch-agent-badge.haiku {
+  background: rgba(0,200,150,0.15);
+  color: #4DFFC9;
+}
+.arch-agent-badge.gate-badge {
+  background: rgba(255,180,0,0.15);
+  color: #FFD166;
+}
+
+/* Blocco connettori verticali dall'orchestratore agli agenti */
+.arch-connector-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+  height: 32px;
+}
+.arch-connector-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: rgba(161,0,255,0.4);
+}
+.arch-tick {
+  width: 2px;
+  height: 32px;
+  background: rgba(161,0,255,0.4);
+  position: relative;
+  flex: 0 0 2px;
+}
+.arch-tick::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid rgba(161,0,255,0.6);
+}
+
+/* ─── Slide flusso runtime ───────────────────────────────────────── */
+.flow-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  max-width: 1000px;
+}
+.flow-step {
+  flex: 1;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 16px 12px;
+  text-align: center;
+  background: rgba(255,255,255,0.03);
+  position: relative;
+}
+.flow-step.active-step {
+  border-color: var(--ac-purple);
+  background: rgba(161,0,255,0.08);
+  box-shadow: 0 0 20px rgba(161,0,255,0.15);
+}
+.flow-step-num {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--ac-purple);
+  margin-bottom: 6px;
+}
+.flow-step-label {
+  font-size: clamp(10px, 1vw, 13px);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 4px;
+}
+.flow-step-desc {
+  font-size: clamp(8px, 0.75vw, 10px);
+  color: rgba(255,255,255,0.45);
+  line-height: 1.4;
+}
+.flow-arrow {
+  flex: 0 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(161,0,255,0.6);
+  font-size: 18px;
+  font-weight: 900;
+}
+
+/* ─── Slide scelte tecniche ──────────────────────────────────────── */
+.tech-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 680px;
+}
+.tech-item {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.tech-gt {
+  flex: 0 0 auto;
+  color: var(--ac-purple);
+  font-weight: 900;
+  font-size: 18px;
+  line-height: 1.4;
+}
+.tech-content h4 {
+  font-size: clamp(13px, 1.3vw, 17px);
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.tech-content p {
+  font-size: clamp(11px, 1vw, 14px);
+  color: rgba(255,255,255,0.55);
+  line-height: 1.5;
+}
+
+/* ─── Slide before/after ─────────────────────────────────────────── */
+.ba-table {
+  width: 100%;
+  max-width: 700px;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+.ba-table th {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  padding: 8px 16px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.ba-table td {
+  padding: 14px 16px;
+  font-size: clamp(12px, 1.1vw, 14px);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.ba-table tr:last-child td { border-bottom: none; }
+.ba-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ba-bar-bg {
+  flex: 1;
+  height: 8px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.ba-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s cubic-bezier(0.4,0,0.2,1) 0.3s;
+}
+.ba-bar-fill.before { background: var(--ac-grey); }
+.ba-bar-fill.after { background: var(--ac-purple); }
+.ba-delta {
+  font-weight: 800;
+  color: #4DFFC9;
+  font-size: 13px;
+  min-width: 44px;
+  text-align: right;
+}
+.ba-concept {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* ─── Slide finale ───────────────────────────────────────────────── */
+.close-gt-big {
+  font-size: clamp(80px, 14vw, 220px);
+  font-weight: 900;
+  color: var(--ac-purple);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  display: block;
+  margin-bottom: 12px;
+}
+.close-tagline {
+  font-size: clamp(20px, 2.5vw, 36px);
+  font-weight: 700;
+  line-height: 1.2;
+  max-width: 18ch;
+  margin-bottom: 28px;
+}
+.close-detail {
+  font-size: clamp(12px, 1.1vw, 15px);
+  color: rgba(255,255,255,0.45);
+  line-height: 1.7;
+  max-width: 44ch;
+}
+
+/* ─── Progress bar (topbar animata) ─────────────────────────────── */
+#progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 4px;
+  background: var(--ac-purple);
+  z-index: 200;
+  transition: width var(--slide-duration) var(--ease);
+}
+
+/* ─── Responsive semplificato ───────────────────────────────────── */
+@media (max-width: 768px) {
+  .arch-agents-grid { grid-template-columns: repeat(3, 1fr); }
+  .two-col { grid-template-columns: 1fr; gap: 20px; }
+  .two-col-3-2 { grid-template-columns: 1fr; gap: 20px; }
+  .flow-row { flex-direction: column; }
+  .flow-arrow { transform: rotate(90deg); }
+}
+</style>
+</head>
+<body>
+
+<div id="viewport">
+  <div id="slider">
+
+    <!-- ══════════════════════════════════════════════════════════════
+         SLIDE 1 — Copertina
+    ══════════════════════════════════════════════════════════════ -->
+    <section class="slide" data-theme="dark">
+      <div id="progress-bar"></div>
+      <div class="gt-deco" aria-hidden="true">&gt;</div>
+
+      <div class="cover-logo-gt">&gt;</div>
+      <div class="cover-accenture">Accenture · Hagenthon 2025</div>
+
+      <h1 class="cover-title">
+        Fin<span class="accent">Flow</span>
+      </h1>
+      <p class="cover-sub">
+        Assessment adattivo per insegnare la finanza ai teenager —
+        costruito con un team di agenti specializzati.
+      </p>
+
+      <div class="cover-badge">Tema 02 — Inclusione Finanziaria</div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         SLIDE 2 — Il problema
+    ══════════════════════════════════════════════════════════════ -->
+    <section class="slide" data-theme="dark">
+      <div class="gt-deco" aria-hidden="true">&gt;</div>
+      <div class="brand"><span class="brand-gt">&gt;</span><span class="brand-name">Accenture</span></div>
+
+      <div class="eyebrow">Il problema</div>
+      <h2 class="slide-title">Un teenager non vede i meccanismi nascosti del denaro</h2>
+      <p class="slide-subtitle">
+        Paghetta, prima carta, abbonamenti digitali: l'adolescente di 15–20 anni
+        maneggia già soldi reali ma ignora costi ricorrenti, interesse composto
+        e commissioni. La scuola non insegna nulla di pratico — e i quiz in stile
+        scolastico vengono semplicemente abbandonati.
+      </p>
+
+      <div class="stat-row">
+        <div class="stat">
+          <div class="stat-num">15–20</div>
+          <div class="stat-label">anni target</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">4</div>
+          <div class="stat-label">concetti chiave</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num">0</div>
+          <div class="stat-label">consigli finanziari<br><small style="font-size:0.55em; font-weight:400">("regola d'oro")</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         SLIDE 3 — La soluzione
+    ══════════════════════════════════════════════════════════════ -->
+    <section class="slide" data-theme="dark">
+      <div class="gt-deco" aria-hidden="true">&gt;</div>
+      <div class="brand"><span class="brand-gt">&gt;</span><span class="brand-name">Accenture</span></div>
+
+      <div class="eyebrow">La soluzione</div>
+      <h2 class="slide-title">Un assessment adattivo invisibile</h2>
+
+      <div class="two-col" style="margin-top:4px">
+        <div>
+          <p class="slide-subtitle" style="margin-bottom:24px">
+            L'utente prende decisioni dentro una simulazione di vita reale.
+            Un motore <strong>IRT/Rasch</strong> misura silenziosamente la comprensione,
+            sblocca micro-lezioni <em>solo dove serve</em> e dimostra il miglioramento
+            con un re-test <strong>before/after misurabile</strong>.
+          </p>
+          <div class="pill">Nessun LLM a runtime — logica deterministica</div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:14px;">
+          <div class="feature-card highlight">
+            <div class="card-icon">🎯</div>
+            <h3>Diagnosi adattiva</h3>
+            <p>Selezione dell'item per massima informazione di Fisher sul concetto più incerto.</p>
+          </div>
+          <div class="feature-card">
+            <div class="card-icon">📚</div>
+            <h3>Micro-lezioni mirate</h3>
+            <p>3 intensità (fondamenta / rinforzo / cenno) proporzionali alla lacuna rilevata.</p>
+          </div>
+          <div class="feature-card">
+            <div class="card-icon">📊</div>
+            <h3>Evidenza before/after</h3>
+            <p>Re-test su item nuovi (mai visti): il δθ misura comprensione, non memoria.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         SLIDE 4 — Architettura agenti
+    ══════════════════════════════════════════════════════════════ -->
+    <section class="slide dark-mid" data-theme="dark">
+      <div class="brand"><span class="brand-gt">&gt;</span><span class="brand-name">Accenture</span></div>
+
+      <div class="eyebrow">L'architettura</div>
+      <h2 class="slide-title" style="font-size:clamp(22px,2.8vw,44px); margin-bottom:20px">
+        Un team di agenti specializzati — domini esclusivi, nessuna sovrapposizione
+      </h2>
+
+      <!-- Diagramma -->
+      <div class="arch-diagram">
+
+        <!-- ORCHESTRATORE -->
+        <div class="arch-orch">
+          orchestratore
+          <span class="model-badge">sonnet-4-5 · decompone &amp; delega · non scrive codice</span>
+        </div>
+
+        <!-- Linea verticale giù -->
+        <div style="width:2px; height:20px; background:var(--ac-purple); margin:0 auto;"></div>
+
+        <!-- Linea orizzontale di distribuzione -->
+        <div style="position:relative; width:92%; height:2px; background:rgba(161,0,255,0.4);">
+          <!-- Tick verticali centrati su ogni agente -->
+          <div style="position:absolute; top:0; left:9%; width:2px; height:18px; background:rgba(161,0,255,0.5);"></div>
+          <div style="position:absolute; top:0; left:27%; width:2px; height:18px; background:rgba(161,0,255,0.5);"></div>
+          <div style="position:absolute; top:0; left:46%; width:2px; height:18px; background:rgba(161,0,255,0.5);"></div>
+          <div style="position:absolute; top:0; left:64%; width:2px; height:18px; background:rgba(161,0,255,0.5);"></div>
+          <div style="position:absolute; top:0; left:82%; width:2px; height:18px; background:rgba(255,180,0,0.5);"></div>
+        </div>
+
+        <!-- 5 agenti -->
+        <div class="arch-agents-grid" style="margin-top:18px">
+
+          <div class="arch-agent">
+            <div class="arch-agent-name">assessment&#8209;agent</div>
+            <div class="arch-agent-domain">Motore IRT<br>engine.js</div>
+            <span class="arch-agent-badge">sonnet-4-5</span>
+          </div>
+
+          <div class="arch-agent">
+            <div class="arch-agent-name">content&#8209;agent</div>
+            <div class="arch-agent-domain">16 item + micro&#8209;lezioni<br>content.js</div>
+            <span class="arch-agent-badge">sonnet-4-5</span>
+          </div>
+
+          <div class="arch-agent">
+            <div class="arch-agent-name">profilo&#8209;agent</div>
+            <div class="arch-agent-domain">Classificazione<br>before/after</div>
+            <span class="arch-agent-badge haiku">haiku-4-5 ↓</span>
+          </div>
+
+          <div class="arch-agent">
+            <div class="arch-agent-name">angular&#8209;developer</div>
+            <div class="arch-agent-domain">Frontend Angular<br>4 fasi</div>
+            <span class="arch-agent-badge">sonnet-4-5</span>
+          </div>
+
+          <div class="arch-agent gate">
+            <div class="arch-agent-name">wcag&#8209;accessibility</div>
+            <div class="arch-agent-domain">Gate WCAG 2.2 AA<br>obbligatorio</div>
+            <span class="arch-agent-badge gate-badge">HITL gate</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         SLIDE 5 — Flusso runtime
+    ══════════════════════════════════════════════════════════════ -->
+    <section class="slide" data-theme="dark">
+      <div class="gt-deco-sm" aria-hidden="true">&gt;</div>
+      <div class="brand"><span class="brand-gt">&gt;</span><span class="brand-name">Accenture</span></div>
+
+      <div class="eyebrow">Il flusso runtime</div>
+      <h2 class="slide-title" style="font-size:clamp(22px,2.6vw,40px); margin-bottom:24px">
+        Angular :4200 → proxy → Fastify :3000 — quattro fasi, stato server-side
+      </h2>
+
+      <div class="flow-row">
+        <div class="flow-step active-step">
+          <div class="flow-step-num">01</div>
+          <div class="flow-step-label">DIAGNOSI</div>
+          <div class="flow-step-desc">POST /start<br>POST /next ×N<br>Rasch aggiorna θ</div>
+        </div>
+        <div class="flow-arrow">&gt;</div>
+        <div class="flow-step">
+          <div class="flow-step-num">02</div>
+          <div class="flow-step-label">PROFILO</div>
+          <div class="flow-step-desc">forte / medio / debole<br>micro-lezioni<br>solo sui gap</div>
+        </div>
+        <div class="flow-arrow">&gt;</div>
+        <div class="flow-step">
+          <div class="flow-step-num">03</div>
+          <div class="flow-step-label">RETEST</div>
+          <div class="flow-step-desc">POST /retest/start<br>POST /retest ×N<br>item nuovi (fase finale)</div>
+        </div>
+        <div class="flow-arrow">&gt;</div>
+        <div class="flow-step active-step">
+          <div class="flow-step-num">04</div>
+          <div class="flow-step-label">RISULTATO</div>
+          <div class="flow-step-desc">before / after / δθ<br>evidenza misurabile<br>del miglioramento</div>
+        </div>
+      </div>
+
+      <p style="margin-top:24px; font-size:clamp(11px,1vw,13px); color:rgba(255,255,255,0.35); max-width:70ch; line-height:1.6;">
+        Stato di sessione nella <code style="color:var(--ac-purple-light)">Map</code> backend, indicizzato da <code style="color:var(--ac-purple-light)">sessionId</code> — il client è stateless sul dominio. Items fase 'iniziale' e 'finale' disgiunti: il re-test misura comprensione, non memoria.
+      </p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         SLIDE 6 — Scelte tecniche
+    ══════════════════════════════════════════════════════════════ -->
+    <section class="slide" data-theme="dark">
+      <div class="gt-deco" aria-hidden="true">&gt;</div>
+      <div class="brand"><span class="brand-gt">&gt;</span><span class="brand-name">Accenture</span></div>
+
+      <div class="eyebrow">Le scelte tecniche</div>
+      <h2 class="slide-title" style="font-size:clamp(22px,2.8vw,42px); margin-bottom:28px">
+        Maturità ingegneristica oltre il prototipo
+      </h2>
+
+      <ul class="tech-list">
+        <li class="tech-item">
+          <span class="tech-gt">&gt;</span>
+          <div class="tech-content">
+            <h4>Agenti con domini esclusivi e output JSON espliciti</h4>
+            <p>Nessun prompt unico ambiguo. Ogni agente possiede un perimetro: <code>content-agent</code> conosce la "regola d'oro", <code>assessment-agent</code> conosce solo l'algebra IRT. Una modifica non si propaga dove non deve.</p>
+          </div>
+        </li>
+        <li class="tech-item">
+          <span class="tech-gt">&gt;</span>
+          <div class="tech-content">
+            <h4>Model tiering: Haiku dove basta, Sonnet dove serve</h4>
+            <p><code>profilo-agent</code> gira su Haiku-4-5 per confronti di soglie e simulazioni meccaniche. Gli agenti che richiedono ragionamento algoritmico o codice idiomatico usano Sonnet-4-5. Riduce costo e latenza senza perdita di qualità.</p>
+          </div>
+        </li>
+        <li class="tech-item">
+          <span class="tech-gt">&gt;</span>
+          <div class="tech-content">
+            <h4>Gate HITL obbligatorio (accessibilità WCAG 2.2 AA)</h4>
+            <p>Nessuna UI Angular è "completa" senza la revisione di <code>wcag-accessibility</code>. L'<code>angular-developer</code> è obbligato a delegare: un punto di controllo umano ispezionabile prima di chiudere il lavoro.</p>
+          </div>
+        </li>
+        <li class="tech-item">
+          <span class="tech-gt">&gt;</span>
+          <div class="tech-content">
+            <h4>Anti-loop e reti di sicurezza nel motore</h4>
+            <p>Tre condizioni di chiusura indipendenti: tutti i concetti misurati, tetto MAX_ITEM, o item esauriti. Se <code>prossimoItem</code> restituisce null, la diagnosi si chiude comunque con il profilo — mai crash.</p>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         SLIDE 7 — Demo / before-after
+    ══════════════════════════════════════════════════════════════ -->
+    <section class="slide" data-theme="dark" id="slide-demo">
+      <div class="gt-deco-sm" aria-hidden="true">&gt;</div>
+      <div class="brand"><span class="brand-gt">&gt;</span><span class="brand-name">Accenture</span></div>
+
+      <div class="eyebrow">Demo — evidenza before/after</div>
+      <h2 class="slide-title" style="font-size:clamp(22px,2.6vw,40px); margin-bottom:16px">
+        Il miglioramento è misurabile, non percepito
+      </h2>
+      <p style="font-size:clamp(11px,1.1vw,14px); color:rgba(255,255,255,0.5); margin-bottom:20px; max-width:54ch; line-height:1.5;">
+        Traccia: rispondi correttamente agli item <em>budget</em>, sbaglia <em>commissioni</em>. Il sistema rileva il gap, propone la micro-lezione, poi ri-misura su item nuovi.
+      </p>
+
+      <table class="ba-table" id="ba-table">
+        <thead>
+          <tr>
+            <th>Concetto</th>
+            <th>Before θ</th>
+            <th>After θ</th>
+            <th>Δ</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="ba-concept">Commissioni</td>
+            <td>
+              <div class="ba-bar-wrap">
+                <div class="ba-bar-bg"><div class="ba-bar-fill before" id="bar-b1" style="width:0%"></div></div>
+                <span style="font-size:11px; color:rgba(255,255,255,0.4)">−0.62</span>
+              </div>
+            </td>
+            <td>
+              <div class="ba-bar-wrap">
+                <div class="ba-bar-bg"><div class="ba-bar-fill after" id="bar-a1" style="width:0%"></div></div>
+                <span style="font-size:11px; color:var(--ac-purple-light)">−0.28</span>
+              </div>
+            </td>
+            <td class="ba-delta">+0.34 ✓</td>
+          </tr>
+          <tr>
+            <td class="ba-concept">Costi ricorrenti</td>
+            <td>
+              <div class="ba-bar-wrap">
+                <div class="ba-bar-bg"><div class="ba-bar-fill before" id="bar-b2" style="width:0%"></div></div>
+                <span style="font-size:11px; color:rgba(255,255,255,0.4)">−0.40</span>
+              </div>
+            </td>
+            <td>
+              <div class="ba-bar-wrap">
+                <div class="ba-bar-bg"><div class="ba-bar-fill after" id="bar-a2" style="width:0%"></div></div>
+                <span style="font-size:11px; color:var(--ac-purple-light)">+0.15</span>
+              </div>
+            </td>
+            <td class="ba-delta">+0.55 ✓</td>
+          </tr>
+          <tr>
+            <td class="ba-concept">Budget <span style="font-size:10px; color:rgba(255,255,255,0.3)">(controllo)</span></td>
+            <td>
+              <div class="ba-bar-wrap">
+                <div class="ba-bar-bg"><div class="ba-bar-fill before" id="bar-b3" style="width:0%"></div></div>
+                <span style="font-size:11px; color:rgba(255,255,255,0.4)">+0.72</span>
+              </div>
+            </td>
+            <td>
+              <div class="ba-bar-wrap">
+                <div class="ba-bar-bg"><div class="ba-bar-fill after" id="bar-a3" style="width:0%"></div></div>
+                <span style="font-size:11px; color:var(--ac-purple-light)">+0.89</span>
+              </div>
+            </td>
+            <td class="ba-delta" style="color:rgba(255,255,255,0.35)">+0.17</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top:16px; font-size:clamp(10px,0.85vw,12px); color:rgba(255,255,255,0.3); font-style:italic;">
+        θ (theta) = stima di abilità Rasch. Range tipico −2 .. +2. Soglie: forte ≥ 0.3 · debole ≤ −0.3.
+      </p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         SLIDE 8 — Chiusura
+    ══════════════════════════════════════════════════════════════ -->
+    <section class="slide" data-theme="dark">
+      <div class="brand"><span class="brand-gt">&gt;</span><span class="brand-name">Accenture</span></div>
+
+      <span class="close-gt-big">&gt;</span>
+      <h2 class="close-tagline">
+        Finanza compresa.<br>Miglioramento misurabile.
+      </h2>
+      <p class="close-detail">
+        FinFlow dimostra che l'approccio agentico non è solo un'architettura più ordinata:
+        è ciò che rende possibile mantenere domini incompatibili separati, applicare model tiering
+        senza perdita di qualità, e inserire gate di controllo umano verificabili — con zero LLM
+        a runtime e un miglioramento dimostrabile di θ davanti ai giudici.
+      </p>
+
+      <div style="margin-top:40px; display:flex; align-items:center; gap:16px;">
+        <div style="width:3px; height:40px; background:var(--ac-purple);"></div>
+        <div>
+          <div style="font-size:13px; font-weight:700; letter-spacing:0.05em;">Hagenthon 2025 — Tema 02</div>
+          <div style="font-size:12px; color:rgba(255,255,255,0.4); margin-top:2px;">Inclusione Finanziaria · Team Accenture</div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /slider -->
+</div><!-- /viewport -->
+
+<!-- ─── Controlli fissi ─────────────────────────────────────────── -->
+<div id="dots" role="tablist" aria-label="Naviga tra le slide"></div>
+
+<button class="nav-btn" id="nav-prev" aria-label="Slide precedente">
+  <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+</button>
+<button class="nav-btn" id="nav-next" aria-label="Slide successiva">
+  <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+</button>
+
+<div id="slide-counter" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const slider  = document.getElementById('slider');
+  const dotsEl  = document.getElementById('dots');
+  const counter = document.getElementById('slide-counter');
+  const navPrev = document.getElementById('nav-prev');
+  const navNext = document.getElementById('nav-next');
+  const progressBar = document.getElementById('progress-bar');
+
+  const N = slides.length;
+  let current = 0;
+  let isAnimating = false;
+  let baAnimated = false;
+
+  /* ─── Costruisci i dot ─── */
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'dot';
+    dot.setAttribute('role', 'tab');
+    dot.setAttribute('aria-label', `Slide ${i + 1}`);
+    dot.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(dot);
+  });
+
+  function updateUI() {
+    /* slider */
+    slider.style.transform = `translateX(-${current * 100}vw)`;
+
+    /* progress */
+    progressBar.style.width = `${((current + 1) / N) * 100}%`;
+
+    /* counter */
+    counter.textContent = `${current + 1} / ${N}`;
+
+    /* tema */
+    const theme = slides[current].dataset.theme || 'dark';
+    const isLight = theme === 'light';
+
+    counter.classList.toggle('on-light', isLight);
+    navPrev.classList.toggle('on-light', isLight);
+    navNext.classList.toggle('on-light', isLight);
+
+    /* dots */
+    Array.from(dotsEl.children).forEach((dot, i) => {
+      dot.classList.toggle('active', i === current);
+      dot.classList.toggle('on-light', isLight);
+    });
+
+    /* prev/next visibility */
+    navPrev.style.opacity = current === 0 ? '0' : '';
+    navPrev.style.pointerEvents = current === 0 ? 'none' : '';
+    navNext.style.opacity = current === N - 1 ? '0' : '';
+    navNext.style.pointerEvents = current === N - 1 ? 'none' : '';
+
+    /* slide demo: anima barre la prima volta */
+    if (current === 6 && !baAnimated) {
+      baAnimated = true;
+      setTimeout(animateBars, 400);
+    }
+  }
+
+  function goTo(index) {
+    if (isAnimating || index === current || index < 0 || index >= N) return;
+    isAnimating = true;
+    current = index;
+    updateUI();
+    setTimeout(() => { isAnimating = false; }, 600);
+  }
+
+  function next() { goTo(current + 1); }
+  function prev() { goTo(current - 1); }
+
+  /* ─── Tastiera ─── */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   { e.preventDefault(); prev(); }
+    if (e.key === 'Home') goTo(0);
+    if (e.key === 'End')  goTo(N - 1);
+  });
+
+  navPrev.addEventListener('click', prev);
+  navNext.addEventListener('click', next);
+
+  /* ─── Touch / swipe ─── */
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) { dx < 0 ? next() : prev(); }
+  }, { passive: true });
+
+  /* ─── Scroll / wheel ─── */
+  let wheelBlock = false;
+  document.addEventListener('wheel', e => {
+    e.preventDefault();
+    if (wheelBlock) return;
+    wheelBlock = true;
+    e.deltaY > 0 ? next() : prev();
+    setTimeout(() => { wheelBlock = false; }, 700);
+  }, { passive: false });
+
+  /* ─── Anima barre before/after ─── */
+  function animateBars() {
+    /* valori mappati su 0..100 per larghezza barra
+       before: −0.62 → 19%, −0.40 → 30%, +0.72 → 68%
+       after:  −0.28 → 36%, +0.15 → 54%, +0.89 → 72%
+       scala: (θ + 2) / 4 × 100  (range −2..+2) */
+    const scale = θ => Math.round(((θ + 2) / 4) * 100);
+    const data = [
+      { b: scale(-0.62), a: scale(-0.28) },
+      { b: scale(-0.40), a: scale(0.15)  },
+      { b: scale(0.72),  a: scale(0.89)  },
+    ];
+    data.forEach((d, i) => {
+      const bb = document.getElementById(`bar-b${i+1}`);
+      const ba = document.getElementById(`bar-a${i+1}`);
+      if (bb) bb.style.width = d.b + '%';
+      if (ba) setTimeout(() => { ba.style.width = d.a + '%'; }, 300);
+    });
+  }
+
+  /* ─── Init ─── */
+  updateUI();
+})();
+</script>
+</body>
+</html>
