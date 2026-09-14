@@ -10,18 +10,19 @@
 //   2. L'utente risponde ad ogni item
 //   3. Quando il backend restituisce fase:'risultato', naviga a /risultato
 // ============================================================
-import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 import { AssessmentService, Item, RispostaFinale } from '../../services/assessment.service';
+import { TrivioComponent } from '../shared/trivio/trivio.component';
 
 @Component({
-    selector: 'app-retest',
-    imports: [CommonModule],
-    templateUrl: './retest.component.html',
-    changeDetection: ChangeDetectionStrategy.Eager,
-    styleUrls: ['./retest.component.scss']
+  selector: 'app-retest',
+  standalone: true,
+  imports: [CommonModule, TrivioComponent],
+  templateUrl: './retest.component.html',
+  styleUrls: ['./retest.component.scss'],
 })
 export class RetestComponent implements OnInit {
   private svc    = inject(AssessmentService);
@@ -31,6 +32,13 @@ export class RetestComponent implements OnInit {
   caricamento  = true;
   feedback: 'esatta' | 'errata' | null = null;
   opzioneScelta: string | null = null;
+
+  /** Mappa il feedback interno all'esito atteso dal trivio. */
+  get feedbackFlash(): 'correct' | 'wrong' | null {
+    if (this.feedback === 'esatta') return 'correct';
+    if (this.feedback === 'errata') return 'wrong';
+    return null;
+  }
 
   ngOnInit(): void {
     this.svc.startRetest().subscribe({
@@ -67,7 +75,7 @@ export class RetestComponent implements OnInit {
           } else if (res.fase === 'risultato') {
             this.navigaRisultato(res as RispostaFinale);
           }
-        }, 800);
+        }, 1200); // lascia completare la camminata dell'avatar (~1s)
       },
       error: (err) => console.error('Errore risposta re-test:', err),
     });

@@ -78,8 +78,8 @@ describe('DiagnosiComponent', () => {
     expect(c.esitoFlash).toBe('correct');
     expect(c.risposteGiuste).toBe(1);
 
-    // Dopo il flash (900ms) avanza al prossimo item.
-    vi.advanceTimersByTime(900);
+    // Dopo il flash (1200ms) avanza al prossimo item.
+    vi.advanceTimersByTime(1200);
     expect(c.progresso).toBe(2);
     expect(c.panelSelezionato).toBeNull();
     expect(c.esitoFlash).toBeNull();
