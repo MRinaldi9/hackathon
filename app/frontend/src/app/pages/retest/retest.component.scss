@@ -1,0 +1,109 @@
+// Stili re-test: riusa le classi di diagnosi + accento visivo "verifica finale"
+.retest-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-lg);
+  min-height: 100vh;
+  gap: var(--space-lg);
+}
+
+.header-retest {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.badge-retest {
+  display: inline-block;
+  background: var(--color-warning);
+  color: #92400E;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 12px;
+  border-radius: var(--radius-full);
+  margin: 0 auto;
+}
+
+.titolo-retest {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+// Riuso degli stili di diagnosi
+.situazione-card {
+  width: 100%;
+  max-width: 480px;
+
+  .tag-concetto {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-warning);
+    background: rgba(251, 191, 36, 0.12);
+    border-radius: var(--radius-full);
+    padding: 2px 10px;
+    margin-bottom: var(--space-sm);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .testo-situazione {
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+}
+
+.opzioni {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  width: 100%;
+  max-width: 480px;
+}
+
+.btn-opzione {
+  width: 100%;
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  touch-action: manipulation;
+
+  &:hover:not(:disabled) { border-color: var(--color-warning); }
+  &:active:not(:disabled) { transform: scale(0.98); }
+  &.selezionata { border-color: var(--color-warning); }
+  &.feedback-esatta { border-color: var(--color-success); background: var(--color-success); color: #fff; }
+  &.feedback-errata { border-color: var(--color-danger); background: var(--color-danger); color: #fff; }
+  &:disabled { opacity: 0.7; cursor: not-allowed; }
+}
+
+.spinner-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+  color: var(--color-muted);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-warning);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }

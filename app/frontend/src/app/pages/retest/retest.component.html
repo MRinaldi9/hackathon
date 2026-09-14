@@ -1,0 +1,37 @@
+<!-- Re-test: stesse gesture della diagnosi, ma item mai visti prima -->
+<div class="retest-container">
+
+  @if (caricamento) {
+    <div class="spinner-wrap">
+      <div class="spinner"></div>
+      <p>Preparando la verifica finale…</p>
+    </div>
+  }
+
+  @if (!caricamento && item) {
+    <div class="header-retest">
+      <span class="badge-retest">Verifica finale</span>
+      <h2 class="titolo-retest">Vediamo se hai capito il meccanismo</h2>
+    </div>
+
+    <div class="card situazione-card">
+      <span class="tag-concetto">{{ item.concetto | titlecase }}</span>
+      <p class="testo-situazione">{{ item.testo }}</p>
+    </div>
+
+    <div class="opzioni">
+      @for (opzione of item.opzioni; track opzione.id) {
+        <button
+          class="btn-opzione"
+          [class.selezionata]="opzioneScelta === opzione.id"
+          [class.feedback-esatta]="feedback === 'esatta' && opzioneScelta === opzione.id"
+          [class.feedback-errata]="feedback === 'errata' && opzioneScelta === opzione.id"
+          [disabled]="!!opzioneScelta"
+          (click)="scegli(opzione.id)">
+          {{ opzione.testo }}
+        </button>
+      }
+    </div>
+  }
+
+</div>

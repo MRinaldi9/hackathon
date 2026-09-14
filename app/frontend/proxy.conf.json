@@ -1,0 +1,5 @@
+{
+  "/start": { "target": "http://localhost:3000", "secure": false },
+  "/next": { "target": "http://localhost:3000", "secure": false },
+  "/retest": { "target": "http://localhost:3000", "secure": false }
+}
