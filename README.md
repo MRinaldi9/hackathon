@@ -6,7 +6,7 @@
 
 ```
 hackathon/
-├── App/          # Applicazione principale
-├── Agents/       # Agenti AI
-└── Presentation/ # Materiale di presentazione
+├── app/          # Applicazione principale
+├── agents/       # Agenti AI
+└── presentation/ # Materiale di presentazione
 ```
