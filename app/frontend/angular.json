@@ -53,6 +53,15 @@
           "options": {
             "proxyConfig": "proxy.conf.json"
           }
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "runner": "vitest",
+            "buildTarget": "hagenthon-frontend:build:development",
+            "tsConfig": "tsconfig.spec.json",
+            "include": ["src/**/*.spec.ts"]
+          }
         }
       }
     }

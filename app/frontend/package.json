@@ -5,7 +5,9 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development"
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "test:ci": "ng test --no-watch"
   },
   "dependencies": {
     "@angular/animations": "^22.1.6",
@@ -24,6 +26,8 @@
     "@angular/build": "^22.1.8",
     "@angular/cli": "^22.1.8",
     "@angular/compiler-cli": "^22.1.6",
-    "typescript": "~6.0.3"
+    "jsdom": "^30.0.1",
+    "typescript": "~6.0.3",
+    "vitest": "^4.1.11"
   }
 }
