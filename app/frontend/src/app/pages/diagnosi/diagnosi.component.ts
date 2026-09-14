@@ -1,12 +1,3 @@
-// ============================================================
-// DiagnosiComponent — fase di assessment adattivo (simulazione).
-//
-// Flusso:
-//   1. ngOnInit: chiama startSession() → riceve il primo item
-//   2. L'utente sceglie un'opzione (tap/swipe)
-//   3. sendAnswer() → riceve il prossimo item oppure il profilo
-//   4. Se la risposta è 'profilo': naviga a /profilo con i dati
-// ============================================================
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
@@ -24,44 +15,42 @@ import {
   templateUrl: './diagnosi.component.html',
   styleUrls: ['./diagnosi.component.scss'],
 })
-export class DiagnosiComponent implements OnInit {
+export class DiagnosiComponent {
   private svc    = inject(AssessmentService);
   private router = inject(Router);
 
-  // Stato del componente
+  mostraIntro  = true;
   item: Item | null = null;
-  progresso    = 0;       // numero di item già risposti
-  caricamento  = true;    // spinner iniziale
-  feedback: 'esatta' | 'errata' | null = null; // flash visivo dopo la risposta
-  opzioneScelta: string | null = null;          // ID dell'opzione selezionata
+  progresso    = 0;
+  caricamento  = false;
+  feedback: 'esatta' | 'errata' | null = null;
+  opzioneScelta: string | null = null;
+  risposteGiuste = 0;
+  animaCard = false;
 
-  ngOnInit(): void {
+  inizia(): void {
+    this.mostraIntro = false;
+    this.caricamento = true;
     this.svc.startSession().subscribe({
       next: (res) => {
         this.item = res.item;
         this.caricamento = false;
+        this.triggerAnimation();
       },
-      error: (err) => {
-        console.error('Errore avvio sessione:', err);
-        this.caricamento = false;
-      },
+      error: () => { this.caricamento = false; },
     });
   }
 
-  /** L'utente tocca un'opzione: mostra feedback visivo, poi manda la risposta. */
   scegli(opzioneId: string): void {
-    if (this.opzioneScelta) return; // evita doppio tap
-
+    if (this.opzioneScelta) return;
     this.opzioneScelta = opzioneId;
 
-    // TODO: il backend restituisce `esatto` — per ora mostra il feedback dopo 800ms
-    // e poi invia la risposta (il feedback effettivo viene mostrato nella prossima versione
-    // in base alla risposta del backend per non rivelare la soluzione prima)
     this.svc.sendAnswer(this.item!.id, opzioneId).subscribe({
       next: (res) => {
-        // Mostra feedback esatta/errata per 800ms
-        this.feedback = (res as any).esatto ? 'esatta' : 'errata';
-        setTimeout(() => this.gestisciRisposta(res), 800);
+        const esatto = (res as any).esatto as boolean;
+        this.feedback = esatto ? 'esatta' : 'errata';
+        if (esatto) this.risposteGiuste++;
+        setTimeout(() => this.gestisciRisposta(res), 900);
       },
       error: (err) => console.error('Errore risposta:', err),
     });
@@ -72,13 +61,17 @@ export class DiagnosiComponent implements OnInit {
     this.opzioneScelta = null;
 
     if (res.fase === 'diagnosi') {
-      // Continua la diagnosi con il prossimo item
       this.item = res.item;
       this.progresso = res.progresso ?? this.progresso + 1;
+      this.triggerAnimation();
     } else if (res.fase === 'profilo') {
-      // Diagnosi completata: naviga al profilo portando i dati
       const dati = res as RispostaProfilo;
       this.router.navigate(['/profilo'], { state: { dati } });
     }
+  }
+
+  private triggerAnimation(): void {
+    this.animaCard = false;
+    setTimeout(() => (this.animaCard = true), 30);
   }
 }

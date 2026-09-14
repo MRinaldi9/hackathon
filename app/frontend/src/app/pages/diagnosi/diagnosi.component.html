@@ -1,29 +1,59 @@
-<!-- Schermata di assessment adattivo: una situazione di vita alla volta -->
 <div class="diagnosi-container">
 
-  <!-- Spinner iniziale -->
-  @if (caricamento) {
+  <!-- ── INTRO SCREEN ─────────────────────────────────── -->
+  @if (mostraIntro) {
+    <div class="intro-screen">
+      <div class="intro-content">
+        <div class="app-logo animate-float">💳</div>
+        <h1 class="display text-gradient">FinFlow</h1>
+        <p class="intro-tagline">Impara la finanza giocando</p>
+        <p class="intro-desc">
+          Ti mettiamo in situazioni reali di vita. Tu scegli.
+          Noi vediamo quanto ci capisci — senza che te ne accorga.
+        </p>
+        <button class="btn btn-primary btn-lg" (click)="inizia()">
+          Inizia la simulazione →
+        </button>
+        <p class="intro-disclaimer">Nessun quiz. Solo situazioni reali.</p>
+      </div>
+    </div>
+  }
+
+  <!-- ── LOADING ────────────────────────────────────────── -->
+  @if (!mostraIntro && caricamento) {
     <div class="spinner-wrap">
       <div class="spinner"></div>
       <p>Preparando la simulazione…</p>
     </div>
   }
 
-  <!-- Simulazione in corso -->
-  @if (!caricamento && item) {
-    <!-- Indicatore di avanzamento (barra) -->
-    <div class="progress-bar">
-      <div class="progress-fill" [style.width.%]="(progresso / 10) * 100"></div>
+  <!-- ── GIOCO ─────────────────────────────────────────── -->
+  @if (!mostraIntro && !caricamento && item) {
+
+    <!-- Header di gioco: progresso + streak -->
+    <div class="game-header">
+      <div class="header-top">
+        <span class="brand-small">FinFlow</span>
+        @if (risposteGiuste > 0) {
+          <span class="streak-counter animate-pop">
+            🔥 {{ risposteGiuste }}
+          </span>
+        }
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="(progresso / 8) * 100"></div>
+      </div>
+      <p class="item-counter">Situazione {{ progresso + 1 }} di 8</p>
     </div>
 
-    <!-- Card situazione -->
-    <div class="card situazione-card">
+    <!-- Card della situazione -->
+    <div class="card situazione-card" [class.card-enter]="animaCard">
       <span class="tag-concetto">{{ item.concetto | titlecase }}</span>
       <p class="testo-situazione">{{ item.testo }}</p>
     </div>
 
-    <!-- Opzioni di risposta (tap o swipe verso l'opzione) -->
-    <div class="opzioni">
+    <!-- Opzioni di risposta -->
+    <div class="opzioni" [class.card-enter]="animaCard">
       @for (opzione of item.opzioni; track opzione.id) {
         <button
           class="btn-opzione"
@@ -36,6 +66,7 @@
         </button>
       }
     </div>
+
   }
 
 </div>

@@ -1,21 +1,25 @@
-<!-- Schermata profilo: forte/debole per concetto + micro-lezioni mirate -->
 <div class="profilo-container">
 
-  <!-- Sezione profilo di competenza -->
-  <section class="sezione-profilo">
+  <!-- Hero profilo -->
+  <div class="profilo-hero">
+    <div class="trofeo animate-pop">🧠</div>
     <h1 class="titolo">Il tuo profilo finanziario</h1>
     <p class="sottotitolo">Ecco cosa ha scoperto la simulazione su di te.</p>
+  </div>
 
+  <!-- Griglia competenze -->
+  <section class="sezione-profilo">
     <div class="griglia-profilo">
       @for (voce of profilo; track voce.concetto) {
-        <div class="card voce-profilo" [class]="'livello-' + voce.livello">
-          <span class="icona-livello">{{ iconaLivello(voce.livello) }}</span>
-          <div class="testi">
-            <span class="nome-concetto">{{ voce.concetto | titlecase }}</span>
-            <span class="etichetta-livello">{{ voce.livello | titlecase }}</span>
+        <div class="card voce-profilo animate-pop" [class]="'livello-' + voce.livello">
+          <div class="voce-left">
+            <span class="icona-livello" [attr.aria-label]="voce.livello">{{ iconaLivello(voce.livello) }}</span>
+            <div class="testi">
+              <span class="nome-concetto">{{ voce.concetto | titlecase }}</span>
+              <span class="pill-livello" [class]="'pill-' + voce.livello">{{ voce.livello }}</span>
+            </div>
           </div>
-          <!-- Barra theta visiva (-2..+2 mappato a 0..100%) -->
-          <div class="barra-theta">
+          <div class="barra-theta" role="progressbar" [attr.aria-valuenow]="((voce.theta + 2) / 4) * 100" aria-valuemin="0" aria-valuemax="100">
             <div class="fill-theta"
                  [style.width.%]="((voce.theta + 2) / 4) * 100"
                  [class]="'fill-' + voce.livello">
@@ -26,29 +30,46 @@
     </div>
   </section>
 
-  <!-- Sezione micro-lezioni (solo se ci sono concetti deboli) -->
+  <!-- Micro-lezioni -->
   @if (haLezioniDaLeggere) {
     <section class="sezione-lezioni">
-      <h2 class="titolo-lezioni">
-        Le tue micro-lezioni ({{ indiceLezione + 1 }} di {{ lezioni.length }})
-      </h2>
+      <h2 class="titolo-lezioni">📖 Le tue micro-lezioni</h2>
+
+      <!-- Dot indicator -->
+      <div class="dot-indicator" role="tablist" aria-label="Lezioni">
+        @for (l of lezioni; track l.concetto; let i = $index) {
+          <button
+            class="dot"
+            [class.dot-attivo]="i === indiceLezione"
+            [attr.aria-label]="'Lezione ' + (i + 1)"
+            [attr.aria-selected]="i === indiceLezione"
+            role="tab"
+            (click)="indiceLezione = i">
+          </button>
+        }
+      </div>
 
       @if (lezioneCorrente) {
-        <div class="card lezione-card">
-          <span class="badge-intensita badge-{{ lezioneCorrente.intensita }}">
-            {{ lezioneCorrente.intensita }}
-          </span>
+        <div class="card lezione-card animate-pop">
+          <div class="lezione-header">
+            <span class="badge-intensita badge-{{ lezioneCorrente.intensita }}">
+              {{ lezioneCorrente.intensita }}
+            </span>
+            <span class="concetto-tag">{{ lezioneCorrente.concetto | titlecase }}</span>
+          </div>
           <h3 class="titolo-lezione">{{ lezioneCorrente.titolo }}</h3>
           <p class="idea">{{ lezioneCorrente.idea }}</p>
 
           @if (lezioneCorrente.esempio) {
             <div class="esempio-box">
-              <strong>Esempio:</strong> {{ lezioneCorrente.esempio }}
+              <span class="box-label">Esempio</span>
+              {{ lezioneCorrente.esempio }}
             </div>
           }
 
           <div class="takeaway-box">
-            <strong>Ricorda:</strong> {{ lezioneCorrente.takeaway }}
+            <span class="box-label">💡 Ricorda</span>
+            {{ lezioneCorrente.takeaway }}
           </div>
         </div>
       }
@@ -57,15 +78,15 @@
         @if (indiceLezione < lezioni.length - 1) {
           Prossima lezione →
         } @else {
-          Inizia la verifica finale →
+          Inizia la verifica finale 🎯
         }
       </button>
     </section>
+
   } @else {
-    <!-- Nessuna debolezza trovata: puoi saltare al re-test -->
-    <div class="card nessuna-debolezza">
-      <span class="grande-check">✅</span>
-      <p>Ottimo! Sei forte su tutti i concetti. Andiamo alla verifica finale.</p>
+    <div class="card nessuna-debolezza animate-pop">
+      <span class="grande-icona">💪</span>
+      <p class="nessuna-testo">Sei già forte su tutti i concetti! Passiamo alla verifica finale.</p>
       <button class="btn btn-primary" (click)="saltaAlRetest()">Vai al re-test →</button>
     </div>
   }
